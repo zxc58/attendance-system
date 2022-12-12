@@ -1,12 +1,11 @@
 /* eslint-disable no-unused-vars */
 // Requirements
-import express from 'express'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import passport from './config/passport.js'
-import router from './routes/index.js'
+const cors = require('cors')
+const passport = require('./config/passport')
+const router = require('./routes/index')
+const express = require('express')
 if (process.env.NODE_ENV !== 'prodution') {
-  const result = dotenv.config()
+  const result = require('dotenv').config()
   if (result.error) { throw new Error('Please provide .env file') }
 }
 // Constants

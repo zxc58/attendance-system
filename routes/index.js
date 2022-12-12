@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import userRouter from './users.js'
-import recordsRouter from './records.js'
+const { Router } = require('express')
+const userRouter = require('./users')
+const recordsRouter = require('./records')
 const router = Router()
 router.use('/users', userRouter)
 router.use('./records', recordsRouter)
-export default router
+module.exports = router

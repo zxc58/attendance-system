@@ -1,5 +1,5 @@
-import { Router } from 'express'
-const userRouter = Router()
-userRouter.post('/signin')
-userRouter.put('/:id')
-export default userRouter
+const { Router } = require('express')
+const router = Router()
+router.post('/signin')
+router.put('/:id')
+export default router

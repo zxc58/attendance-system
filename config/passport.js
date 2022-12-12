@@ -1,4 +1,4 @@
 /* eslint-disable no-unused-vars */
-import passport from 'passport'
-import { Strategy as JWTStrategy, ExtractJwt } from 'passport-jwt'
-export default passport
+const passport = require('passport')
+const { Strategy: jwtStrategy, ExtractJwt } = require('passport-jwt')
+module.exports = passport

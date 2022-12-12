@@ -1,4 +1,4 @@
-import { Router } from 'express'
-const recordsRouter = Router()
-recordsRouter.post('/')
-export default recordsRouter
+const { Router } = require('express')
+const router = Router()
+router.post('/')
+module.exports = router
