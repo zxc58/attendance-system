@@ -17,6 +17,11 @@ module.exports = {
           deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
         }
       },
+      punching_time: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now')
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE

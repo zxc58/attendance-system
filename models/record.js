@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Users',
         key: 'id'
       }
+    },
+    punchingTime: {
+      type: DataTypes.DATE.DATE,
+      defaultValue: new Date()
     }
   }, {
     sequelize,
