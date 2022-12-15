@@ -1,4 +1,4 @@
-const swaggerAutogen = require('swagger-autogen')
+const swaggerAutogen = require('swagger-autogen')()
 const outputFile = './swagger/swagger-output.json'
 const endpointFile = ['./app.js']
 const doc = {
@@ -9,8 +9,8 @@ const doc = {
   host: 'localhost:3000',
   schemes: ['http'],
   tags: [
-    { name: 'Records', description: 'Record API' },
-    { name: 'Users', description: 'User API' }
+    { name: 'Record', description: 'Record API' },
+    { name: 'User', description: 'User API' }
   ]
 }
 swaggerAutogen(outputFile, endpointFile, doc)

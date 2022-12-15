@@ -9,11 +9,11 @@
   "basePath": "/",
   "tags": [
     {
-      "name": "Records",
+      "name": "Record",
       "description": "Record API"
     },
     {
-      "name": "Users",
+      "name": "User",
       "description": "User API"
     }
   ],
@@ -21,6 +21,13 @@
     "http"
   ],
   "paths": {
+    "/api/docs": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/api/logIn": {
       "post": {
         "description": "",
@@ -30,14 +37,20 @@
     },
     "/api/users/": {
       "get": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Get personal data",
         "parameters": [],
         "responses": {}
       }
     },
     "/api/users/{id}": {
       "put": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Update personal data (only password)",
         "parameters": [
           {
             "name": "id",
