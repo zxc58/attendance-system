@@ -7,7 +7,8 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "initDb":"sequelize db:migrate && sequelize db:seed:all"
+    "initDb": "sequelize db:migrate && sequelize db:seed:all",
+    "swagger": "node swagger/swagger-autogen.js"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,8 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
-    "eslint-plugin-promise": "^6.1.1"
+    "eslint-plugin-promise": "^6.1.1",
+    "swagger-autogen": "^2.22.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -30,6 +32,7 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.27.0"
+    "sequelize": "^6.27.0",
+    "swagger-ui-express": "^4.6.0"
   }
 }
