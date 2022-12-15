@@ -1,49 +1,54 @@
-/* eslint-disable no-unused-vars */
 // Requirements
-const dayjs = require('dayjs')
-const utc = require('dayjs/plugin/utc')
-const timezone = require('dayjs/plugin/timezone')
 const { Op } = require('sequelize')
 const { Record } = require('../../models')
 const { getRevisedTime } = require('../../helpers/timeHelper')
 // Constants
-const dividedHour = process.env.DIVIDED_TIME
 
 //
-dayjs.extend(utc)
-dayjs.extend(timezone)
-//
-exports.getOnesAllRecord = async (req, res, next) => {
+exports.getRecentlRecords = async (req, res, next) => { // For recent punching
   try {
     const { id } = req.user
     const record = await Record.findAll({ where: { userId: id } })
-    const message = 'Get record success'
+    const message = 'Get records success'
     return res.json({ status: true, message, data: record })
   } catch (error) { next(error) }
 }
-exports.postRecord = async (req, res, next) => {
+
+exports.postRecord = async (req, res, next) => { // For punch in
   try {
     const { id } = req.user
-    await Record.create({ userId: id })
-    const message = 'Punching successfully'
+    const type = 'in'
+    await Record.create({ userId: id, type })
+    const message = 'Punch in successfully'
     return res.json({ status: true, message })
   } catch (error) { next(error) }
 }
-exports.getOnesPunching = async (req, res, next) => {
+
+exports.getTodayRecord = async (req, res, next) => { // For today punch
   try {
     const { id } = req.user
     const startTime = getRevisedTime()
-    const records = await Record.findAll({
+    // console.log(startTime.toDate())
+    const records = await Record.findOne({
       where: {
         id,
-        punchingTime: {
+        createdAt: {
           [Op.gte]: startTime.toDate()
         }
-      },
-      raw: true,
-      nest: true
+      }
     })
-    const message = 'Get punching successfully'
-    return res.json({ status: true, message, data: records })
+
+    const message = 'Get today punching successfully'
+    return res.json({ status: true, message, data: records.toJSON() })
+  } catch (error) { next(error) }
+}
+
+exports.putRecord = async (req, res, next) => { // For punch out
+  try {
+    const { id } = req.params
+    const { workingHour } = req.body
+    await Record.update({ workingHour, type: 'out' }, { where: { id } })
+    const message = 'Punch out successfully'
+    return res.json({ status: true, message })
   } catch (error) { next(error) }
 }

@@ -2,6 +2,9 @@
 const { Router } = require('express')
 const { recordController } = require('../../controllers')
 const router = Router()
+router.get('/today', recordController.getTodayRecord)
+router.get('/recent', recordController.getRecentlRecords)
 router.post('/', recordController.postRecord)
-router.get('/today', recordController.getOnesPunching)
+router.put('/:id', recordController.putRecord)
+
 module.exports = router

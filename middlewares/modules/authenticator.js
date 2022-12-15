@@ -4,7 +4,7 @@ const authenticator = {
   localAuthenticator: (req, res, next) => {
     passport.authenticate('local', { session: false }, async (err, user, info) => {
       if (err) { return next(err) }
-      if (['account do not exist', 'password wrong', 'wrong times over 5'].includes(info)) {
+      if (info && !user) {
         return res.json({ status: true, message: info })
       }
       if (user) {

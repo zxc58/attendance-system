@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Record.init({
+    type: DataTypes.STRING,
     userId: {
       type: DataTypes.INTEGER,
       references: {
@@ -21,10 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    punchingTime: {
-      type: DataTypes.DATE.DATE,
-      defaultValue: new Date()
-    }
+    workingHour: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Record',

@@ -2,7 +2,7 @@
 const passport = require('passport')
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local')
-const bcrypt = require('bcryptjs')
+const bcryptjs = require('bcryptjs')
 const { User } = require('../models')
 // Constants
 const jwtConfig = {
@@ -15,7 +15,7 @@ passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, pas
     const user = await User.findOne({ where: { account } })
     if (!user) { return done(null, false, 'account do not exist') }
     if (user.wrongTimes >= 5) { return done(null, false, 'wrong times over 5') }
-    if (!bcrypt.compareSync(user.password, password)) {
+    if (!bcryptjs.compareSync(password, user.password)) {
       user.wrongTimes++
       await user.save()
       return done(null, false, { message: 'password wrong' })

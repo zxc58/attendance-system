@@ -1,7 +1,7 @@
 const { User } = require('../../models')
 exports.getUser = async (req, res, next) => {
   try {
-    const { id } = req.params
+    const id = req.user.id
     const user = await User.findByPk(id)
     const message = 'get user data successfully'
     return res.json({ status: true, message, user: user.toJSON() })
