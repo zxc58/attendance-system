@@ -3,7 +3,7 @@ exports.getUser = async (req, res, next) => {
   try {
     const id = req.user.id
     const user = await User.findByPk(id)
-    const message = 'get user data successfully'
+    const message = 'Get user data successfully'
     return res.json({ status: true, message, user: user.toJSON() })
   } catch (error) { next(error) }
 }

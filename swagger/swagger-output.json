@@ -1,0 +1,99 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Attendance backend API",
+    "description": "An API doc for attendance backend API server",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/logIn": {
+      "post": {
+        "tags": [
+          "Sign in"
+        ],
+        "description": "Sign in",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/users/": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Get personal data",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/users/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "Update personal data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/records/today": {
+      "get": {
+        "tags": [
+          "Record"
+        ],
+        "description": "Get personal today;s punching",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/records/recent": {
+      "get": {
+        "tags": [
+          "Record"
+        ],
+        "description": "Get personal punching receet",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/records/": {
+      "post": {
+        "tags": [
+          "Record"
+        ],
+        "description": "Puching in",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/records/{id}": {
+      "put": {
+        "tags": [
+          "Record"
+        ],
+        "description": "Punching out",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    }
+  }
+}
