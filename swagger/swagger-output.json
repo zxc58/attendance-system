@@ -7,30 +7,16 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "tags": [
-    {
-      "name": "Record",
-      "description": "Record API"
-    },
-    {
-      "name": "User",
-      "description": "User API"
-    }
-  ],
   "schemes": [
     "http"
   ],
   "paths": {
-    "/api/docs": {
-      "get": {
-        "description": "",
-        "parameters": [],
-        "responses": {}
-      }
-    },
     "/api/logIn": {
       "post": {
-        "description": "",
+        "tags": [
+          "Sign in"
+        ],
+        "description": "Sign in",
         "parameters": [],
         "responses": {}
       }
@@ -50,7 +36,7 @@
         "tags": [
           "User"
         ],
-        "description": "Update personal data (only password)",
+        "description": "Update personal data",
         "parameters": [
           {
             "name": "id",
@@ -64,28 +50,40 @@
     },
     "/api/records/today": {
       "get": {
-        "description": "",
+        "tags": [
+          "Record"
+        ],
+        "description": "Get personal today;s punching",
         "parameters": [],
         "responses": {}
       }
     },
     "/api/records/recent": {
       "get": {
-        "description": "",
+        "tags": [
+          "Record"
+        ],
+        "description": "Get personal punching receet",
         "parameters": [],
         "responses": {}
       }
     },
     "/api/records/": {
       "post": {
-        "description": "",
+        "tags": [
+          "Record"
+        ],
+        "description": "Puching in",
         "parameters": [],
         "responses": {}
       }
     },
     "/api/records/{id}": {
       "put": {
-        "description": "",
+        "tags": [
+          "Record"
+        ],
+        "description": "Punching out",
         "parameters": [
           {
             "name": "id",

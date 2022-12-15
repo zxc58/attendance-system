@@ -1,10 +1,29 @@
-/* eslint-disable no-unused-vars */
 const { Router } = require('express')
 const { recordController } = require('../../controllers')
+
 const router = Router()
-router.get('/today', recordController.getTodayRecord)
-router.get('/recent', recordController.getRecentlRecords)
-router.post('/', recordController.postRecord)
-router.put('/:id', recordController.putRecord)
+router.get(
+  '/today', recordController.getTodayRecord
+  // #swagger.tags = ['Record']
+  // #swagger.description = 'Get personal today;s punching'
+)
+
+router.get(
+  '/recent', recordController.getRecentlRecords
+  // #swagger.tags = ['Record']
+  // #swagger.description = 'Get personal punching receet'
+)
+
+router.post(
+  '/', recordController.postRecord
+  // #swagger.tags = ['Record']
+  // #swagger.description = 'Puching in'
+)
+
+router.put(
+  '/:id', recordController.putRecord
+  // #swagger.tags = ['Record']
+  // #swagger.description = 'Punching out'
+)
 
 module.exports = router

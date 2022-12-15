@@ -7,10 +7,7 @@ const doc = {
     description: 'An API doc for attendance backend API server'
   },
   host: 'localhost:3000',
-  schemes: ['http'],
-  tags: [
-    { name: 'Record', description: 'Record API' },
-    { name: 'User', description: 'User API' }
-  ]
+  schemes: ['http']
 }
+
 swaggerAutogen(outputFile, endpointFile, doc)
