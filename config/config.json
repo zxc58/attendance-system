@@ -1,11 +1,10 @@
 {
   "development": {
     "username": "root",
-    "password": "password",
-    "database": "attendance_system",
+    "password": null,
+    "database": "database_development",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "logging":false
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
