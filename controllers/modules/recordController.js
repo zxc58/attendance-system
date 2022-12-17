@@ -17,10 +17,12 @@ exports.getRecentlRecords = async (req, res, next) => { // For recent punching
 exports.postRecord = async (req, res, next) => { // For punch in
   try {
     const { id } = req.user
+    const { createdAt } = req.body
     const type = 'in'
-    await Record.create({ userId: id, type })
+    const record = await Record.create({ userId: id, type, createdAt })
+    if (!record) { throw new Error('Punch in failed') }
     const message = 'Punch in successfully'
-    return res.json({ status: true, message })
+    return res.json({ status: true, message, record: record.toJSON() })
   } catch (error) { next(error) }
 }
 
@@ -28,18 +30,20 @@ exports.getTodayRecord = async (req, res, next) => { // For today punch
   try {
     const { id } = req.user
     const startTime = getRevisedTime()
-    // console.log(startTime.toDate())
-    const records = await Record.findOne({
+    const record = await Record.findOne({
       where: {
-        id,
+        userId: id,
         createdAt: {
           [Op.gte]: startTime.toDate()
         }
       }
     })
-
+    if (!record) {
+      const message = 'You have not punched in yet'
+      return res.json({ status: true, message })
+    }
     const message = 'Get today punching successfully'
-    return res.json({ status: true, message, data: records.toJSON() })
+    return res.json({ status: true, message, record: record.toJSON() })
   } catch (error) { next(error) }
 }
 

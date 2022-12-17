@@ -10,7 +10,6 @@ exports.getNowTime = () => dayjs().tz(timeZoneName)
 exports.getRevisedTime = () => {
   let revisedTime
   const now = dayjs().tz(timeZoneName)
-  // console.log(dividedHour)
   if (now.hour() < dividedHour) {
     revisedTime = now.subtract(1, 'day').startOf('day').add(dividedHour, 'hour')
   } else {
