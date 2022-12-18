@@ -30,12 +30,11 @@ module.exports = {
         type: Sequelize.STRING
       },
       hire_date: {
-        defaultValue: Sequelize.fn('now'),
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
       is_admin: {
-        defaultValue: 0,
-        type: Sequelize.INTEGER
+        defaultValue: false,
+        type: Sequelize.BOOLEAN
       },
       department_id: {
         type: Sequelize.INTEGER,
