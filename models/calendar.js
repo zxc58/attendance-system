@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Calendar.init({
     date: DataTypes.DATE,
     day: DataTypes.STRING,
-    is_holiday: DataTypes.INTEGER
+    isHoliday: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Calendar',
