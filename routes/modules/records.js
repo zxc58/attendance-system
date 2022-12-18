@@ -3,7 +3,7 @@ const { recordController } = require('../../controllers')
 
 const router = Router()
 router.get(
-  '/today', recordController.getTodayRecord
+  '/today', recordController.getTodaysRecord
   // #swagger.tags = ['Record']
   // #swagger.description = 'Get personal today;s punching'
 )

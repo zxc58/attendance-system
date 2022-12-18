@@ -2,10 +2,9 @@
   "development": {
     "username": "root",
     "password": "password",
-    "database": "attendance_system",
+    "database": "titansoft",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "logging":false
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",

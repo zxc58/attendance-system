@@ -17,6 +17,6 @@ router.use('/users', jwtAuthenticator, userRouter)
 router.use('/records', jwtAuthenticator, recordsRouter)
 router.use('/', (req, res) => res.send('concatenated'))
 router.use('/', (error, req, res, next) => {
-  return res.status(500).json({ status: false, error })
+  return console.log(error)
 })
 module.exports = router

@@ -2,37 +2,31 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('Records', {
+    await queryInterface.createTable('Departments', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Users',
-          key: 'id',
-          deferrable: Sequelize.Deferrable.INITIALLY_IMMEDIATE
-        }
-      },
-      working_hour: {
+      name: {
+        unique: true,
         allowNull: false,
-        type: Sequelize.INTEGER,
-        defaultValue: 0
+        type: Sequelize.STRING
       },
       created_at: {
+        defaultValue: Sequelize.fn('now'),
         allowNull: false,
         type: Sequelize.DATE
       },
       updated_at: {
+        defaultValue: Sequelize.fn('now'),
         allowNull: false,
         type: Sequelize.DATE
       }
     })
   },
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('Records')
+    await queryInterface.dropTable('Departments')
   }
 }
