@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     account: DataTypes.STRING,
     password: DataTypes.STRING,
     phone: DataTypes.STRING,
-    hireDate: DataTypes.DATE,
-    isAdmin: DataTypes.INTEGER,
+    hireDate: DataTypes.DATEONLY,
+    isAdmin: DataTypes.BOOLEAN,
     departmentId: {
       type: DataTypes.INTEGER,
       references: {

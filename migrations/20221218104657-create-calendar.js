@@ -16,8 +16,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       is_holiday: {
-        defaultValue: 0,
-        type: Sequelize.INTEGER
+        defaultValue: false,
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         defaultValue: Sequelize.fn('now'),
