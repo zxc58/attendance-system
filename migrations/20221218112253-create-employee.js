@@ -30,7 +30,6 @@ module.exports = {
         type: Sequelize.STRING
       },
       hire_date: {
-        defaultValue: Sequelize.fn('now'),
         type: Sequelize.DATEONLY
       },
       is_admin: {
