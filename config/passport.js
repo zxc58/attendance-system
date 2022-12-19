@@ -14,20 +14,20 @@ const jwtConfig = {
 passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, password, done) => {
   try {
     const wrongTimes = await redisClient.get(`account:${account}`)
-    if (+wrongTimes === 5) { return done(null, false, 'wrong times over 5') }
+    if (+wrongTimes === 5) { return done(null, false, 'Wrong times over 5') }
     const user = await Employee.findOne({ where: { account } })
-    if (!user) { return done(null, false, 'account do not exist') }
+    if (!user) { return done(null, false, 'Account do not exist') }
     if (!bcryptjs.compareSync(password, user.password)) {
       const newWrongTimes = wrongTimes ? +wrongTimes + 1 : 1
       redisClient.set(`account:${account}`, newWrongTimes)
-      return done(null, false, { message: 'password wrong' })
+      return done(null, false, 'Password wrong')
     }
     return done(null, user.toJSON())
   } catch (error) { console.error(error); done(error) }
 }))
 passport.use(new JwtStrategy(jwtConfig, async (jwtPayload, done) => {
   try {
-    const user = await Employee.findByPk(jwtPayload.id)
+    const user = await Employee.findByPk(jwtPayload.id, { logging: false })
     if (!user) { return done(new Error('jwt wrong')) }
     done(null, user.toJSON())
   } catch (error) { console.error(error); done(error) }

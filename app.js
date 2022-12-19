@@ -10,8 +10,7 @@ const passport = require('./config/passport')
 const router = require('./routes/index')
 const swaggerDocument = require('./swagger/swagger-output.json')
 const redisClient = require('./config/redis')
-const { Calendar } = require('./models')
-const { getRevisedTime } = require('./helpers/timeHelper')
+
 // Constants
 const port = process.env.PORT ?? 3000
 const app = express()
@@ -23,12 +22,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/api', router)
 // Listening
 app.listen(port, async () => {
-  const date = getRevisedTime().subtract(5, 'h').format('YYYY-MM-DD')
-  const today = await Calendar.findOne({
-    where: {
-      date
-    }
-  })
-  await redisClient.set('today', JSON.stringify(today.toJSON()))
+  redisClient.connect()
   console.log('server active , done')
 })
