@@ -1,8 +1,8 @@
 // Requirements
 const { Router } = require('express')
 
-const userRouter = require('./modules/users')
-const recordsRouter = require('./modules/records')
+const employeeRouter = require('./modules/employees')
+const attendanceRouter = require('./modules/attendances')
 
 const { authenticator: { jwtAuthenticator, localAuthenticator } } = require('../middlewares')
 
@@ -13,10 +13,11 @@ router.post(
   // #swagger.tags = ['Sign in']
   // #swagger.description = 'Sign in'
 )
-router.use('/users', jwtAuthenticator, userRouter)
-router.use('/records', jwtAuthenticator, recordsRouter)
+router.use('/employees', jwtAuthenticator, employeeRouter)
+router.use('/attendances', jwtAuthenticator, attendanceRouter)
 router.use('/', (req, res) => res.send('concatenated'))
 router.use('/', (error, req, res, next) => {
+  res.status(500).json({ error })
   return console.log(error)
 })
 module.exports = router

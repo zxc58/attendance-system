@@ -19,12 +19,12 @@ module.exports = {
         defaultValue: false,
         type: Sequelize.BOOLEAN
       },
-      createdAt: {
+      created_at: {
         defaultValue: Sequelize.fn('now'),
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         defaultValue: Sequelize.fn('now'),
         allowNull: false,
         type: Sequelize.DATE

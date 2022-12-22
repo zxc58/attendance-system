@@ -3,7 +3,8 @@ const passport = require('passport')
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local')
 const bcryptjs = require('bcryptjs')
-const { User } = require('../models')
+const redisClient = require('./redis')
+const { Employee } = require('../models')
 // Constants
 const jwtConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -12,20 +13,21 @@ const jwtConfig = {
 // Register strategy
 passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, password, done) => {
   try {
-    const user = await User.findOne({ where: { account } })
-    if (!user) { return done(null, false, 'account do not exist') }
-    if (user.wrongTimes >= 5) { return done(null, false, 'wrong times over 5') }
+    const wrongTimes = await redisClient.get(`account:${account}`)
+    if (+wrongTimes === 5) { return done(null, false, 'Wrong times over 5') }
+    const user = await Employee.findOne({ where: { account } })
+    if (!user) { return done(null, false, 'Account do not exist') }
     if (!bcryptjs.compareSync(password, user.password)) {
-      user.wrongTimes++
-      await user.save()
-      return done(null, false, { message: 'password wrong' })
+      const newWrongTimes = wrongTimes ? +wrongTimes + 1 : 1
+      redisClient.set(`account:${account}`, newWrongTimes)
+      return done(null, false, 'Password wrong')
     }
     return done(null, user.toJSON())
   } catch (error) { console.error(error); done(error) }
 }))
 passport.use(new JwtStrategy(jwtConfig, async (jwtPayload, done) => {
   try {
-    const user = await User.findByPk(jwtPayload.id)
+    const user = await Employee.findByPk(jwtPayload.id, { logging: false })
     if (!user) { return done(new Error('jwt wrong')) }
     done(null, user.toJSON())
   } catch (error) { console.error(error); done(error) }

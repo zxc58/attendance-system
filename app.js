@@ -9,6 +9,8 @@ const swaggerUi = require('swagger-ui-express')
 const passport = require('./config/passport')
 const router = require('./routes/index')
 const swaggerDocument = require('./swagger/swagger-output.json')
+const redisClient = require('./config/redis')
+
 // Constants
 const port = process.env.PORT ?? 3000
 const app = express()
@@ -19,4 +21,7 @@ app.use(passport.initialize())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/api', router)
 // Listening
-app.listen(port, () => console.log('App start'))
+app.listen(port, async () => {
+  redisClient.connect()
+  console.log('server active , done')
+})
