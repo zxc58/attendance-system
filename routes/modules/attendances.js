@@ -1,5 +1,6 @@
 const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
+const { validator: { punchIn, punchOut, validationCallback } } = require('../../middlewares')
 
 const router = Router()
 router.get(
@@ -15,13 +16,13 @@ router.get(
 )
 
 router.post(
-  '/', attendanceController.postRecord
+  '/', [punchIn, validationCallback], attendanceController.postRecord
   // #swagger.tags = ['Record']
   // #swagger.description = 'Punch in'
 )
 
 router.put(
-  '/:id', attendanceController.putRecord
+  '/:id', [punchOut, validationCallback], attendanceController.putRecord
   // #swagger.tags = ['Record']
   // #swagger.description = 'Punch out'
 )
