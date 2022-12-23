@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
-const { validator: { punchIn, punchOut, validationCallback } } = require('../../middlewares')
+const { validator: { position, punchIn, punchOut, validationCallback } } = require('../../middlewares')
 
 const router = Router()
 router.get(

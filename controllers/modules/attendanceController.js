@@ -3,9 +3,10 @@
 const { Op } = require('sequelize')
 const { Attendance, Calendar } = require('../../models')
 const { getRevisedTime } = require('../../helpers/timeHelper')
+const { distance } = require('../../helpers/mathHelper')
 const redisClient = require('../../config/redis')
 // Constants
-
+const homePosition = { latitude: 25.04712450557659, longitude: 121.44501747146609 }
 //
 exports.getRecentlRecords = async (req, res, next) => { // For recent punching
   try {
@@ -60,7 +61,9 @@ exports.getTodaysRecord = async (req, res, next) => { // For today punch
 exports.postRecord = async (req, res, next) => { // For punch in
   try {
     const employeeId = req.user.id
-    const { punchIn } = req.body
+    const { punchIn, latitude, longitude } = req.body
+    const twoPlacesDistance = distance(homePosition, { latitude, longitude })
+    console.log(twoPlacesDistance)
     const todayJSON = await redisClient.get('today')
     const today = JSON.parse(todayJSON)
     const dateId = today.id
@@ -74,7 +77,9 @@ exports.postRecord = async (req, res, next) => { // For punch in
 exports.putRecord = async (req, res, next) => { // For punch out
   try {
     const { id } = req.params
-    const { punchOut } = req.body
+    const { punchOut, latitude, longitude } = req.body
+    const twoPlacesDistance = distance(homePosition, { latitude, longitude })
+    console.log(twoPlacesDistance)
     if (!id || !punchOut) { throw new Error('Lack neccessary vars') }
     const attendance = await Attendance.findByPk(id)
     if (!attendance) { throw new Error('req.params.id is wrong') }

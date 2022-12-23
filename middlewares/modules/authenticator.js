@@ -5,11 +5,11 @@ const authenticator = {
     passport.authenticate('local', { session: false }, async (err, user, info) => {
       if (err) { return next(err) }
       if (info && !user) {
-        return res.json({ status: true, message: info })
+        return res.json({ status: false, message: info })
       }
       if (user) {
         const id = user.id
-        const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1d' })
+        const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' })
         return res.json({ status: true, message: 'Get jwt token', token })
       }
     })(req, res, next)

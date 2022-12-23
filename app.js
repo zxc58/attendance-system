@@ -10,7 +10,6 @@ const passport = require('./config/passport')
 const router = require('./routes/index')
 const swaggerDocument = require('./swagger/swagger-output.json')
 const redisClient = require('./config/redis')
-
 // Constants
 const port = process.env.PORT ?? 3000
 const app = express()
