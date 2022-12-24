@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars */
 // Requirements
 const { Op } = require('sequelize')
 const { Attendance, Calendar } = require('../../models')
-const { getRevisedTime } = require('../../helpers/timeHelper')
-const { distance } = require('../../helpers/mathHelper')
 const redisClient = require('../../config/redis')
 // Constants
-const homePosition = { latitude: 25.04712450557659, longitude: 121.44501747146609 }
 //
 exports.getRecentlRecords = async (req, res, next) => { // For recent punching
   try {
@@ -32,7 +28,6 @@ exports.getRecentlRecords = async (req, res, next) => { // For recent punching
       order: [['date', 'DESC']]
     })
     const message = 'Get records success'
-    // console.log('attendances')
     return res.json({ status: true, message, attendances })
   } catch (error) { next(error) }
 }
@@ -51,7 +46,7 @@ exports.getTodaysRecord = async (req, res, next) => { // For today punch
     })
     if (!attendance) {
       const message = 'You have not punched in yet'
-      return res.json({ status: true, message, attendance: null })
+      return res.json({ status: false, message })
     }
     const message = 'Get today punching successfully'
     return res.json({ status: true, message, attendance: attendance.toJSON() })
@@ -61,9 +56,7 @@ exports.getTodaysRecord = async (req, res, next) => { // For today punch
 exports.postRecord = async (req, res, next) => { // For punch in
   try {
     const employeeId = req.user.id
-    const { punchIn, latitude, longitude } = req.body
-    const twoPlacesDistance = distance(homePosition, { latitude, longitude })
-    console.log(twoPlacesDistance)
+    const { punchIn } = req.body
     const todayJSON = await redisClient.get('today')
     const today = JSON.parse(todayJSON)
     const dateId = today.id
@@ -77,9 +70,7 @@ exports.postRecord = async (req, res, next) => { // For punch in
 exports.putRecord = async (req, res, next) => { // For punch out
   try {
     const { id } = req.params
-    const { punchOut, latitude, longitude } = req.body
-    const twoPlacesDistance = distance(homePosition, { latitude, longitude })
-    console.log(twoPlacesDistance)
+    const { punchOut } = req.body
     if (!id || !punchOut) { throw new Error('Lack neccessary vars') }
     const attendance = await Attendance.findByPk(id)
     if (!attendance) { throw new Error('req.params.id is wrong') }

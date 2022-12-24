@@ -4,12 +4,12 @@ const { Router } = require('express')
 const employeeRouter = require('./modules/employees')
 const attendanceRouter = require('./modules/attendances')
 
-const { authenticator: { jwtAuthenticator, localAuthenticator } } = require('../middlewares')
+const { validator: { distance }, authenticator: { jwtAuthenticator, localAuthenticator } } = require('../middlewares')
 
 const router = Router()
 
 router.post(
-  '/logIn', localAuthenticator
+  '/logIn', distance, localAuthenticator
   // #swagger.tags = ['Sign in']
   // #swagger.description = 'Sign in'
 )
