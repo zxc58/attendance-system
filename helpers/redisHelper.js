@@ -1,4 +1,3 @@
-// const redisClient = require('../config/redis')
 const { Calendar, Sequelize } = require('../models')
 const { getRevisedTime, getNowTime } = require('./timeHelper')
 const { Op } = Sequelize
