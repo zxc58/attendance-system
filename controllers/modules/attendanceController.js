@@ -1,11 +1,8 @@
-/* eslint-disable no-unused-vars */
 // Requirements
 const { Op } = require('sequelize')
 const { Attendance, Calendar } = require('../../models')
-const { getRevisedTime } = require('../../helpers/timeHelper')
 const redisClient = require('../../config/redis')
 // Constants
-
 //
 exports.getRecentlRecords = async (req, res, next) => { // For recent punching
   try {
@@ -31,7 +28,6 @@ exports.getRecentlRecords = async (req, res, next) => { // For recent punching
       order: [['date', 'DESC']]
     })
     const message = 'Get records success'
-    // console.log('attendances')
     return res.json({ status: true, message, attendances })
   } catch (error) { next(error) }
 }
@@ -50,7 +46,7 @@ exports.getTodaysRecord = async (req, res, next) => { // For today punch
     })
     if (!attendance) {
       const message = 'You have not punched in yet'
-      return res.json({ status: true, message, attendance: null })
+      return res.json({ status: false, message })
     }
     const message = 'Get today punching successfully'
     return res.json({ status: true, message, attendance: attendance.toJSON() })
