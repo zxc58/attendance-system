@@ -1,10 +1,11 @@
 const { Calendar, Sequelize } = require('../models')
-const { getRevisedTime, getNowTime } = require('./timeHelper')
+const { getRevisedTime, getNowTime, getRevisedDate } = require('./timeHelper')
 const { Op } = Sequelize
 async function periodFunction (redisClient) {
-  const dateObject = getRevisedTime().add(8, 'h')
-  const date = dateObject.toDate()
-  const before7Date = dateObject.subtract(7, 'd').toDate()
+  const date = getRevisedDate().toDate()
+  const before7Date = getRevisedDate().subtract(7, 'd').toDate()
+  console.log(date)
+  console.log(before7Date)
   const [today, recentDates] = await Promise.all([
     Calendar.findOne({
       where: {
@@ -31,9 +32,7 @@ async function periodFunction (redisClient) {
       logging: false
     })
   ])
-  console.log('today: ')
   console.log(today.toJSON())
-  console.log('recent date: ')
   console.log(recentDates)
   await Promise.all([
     redisClient.set('today', JSON.stringify(today.toJSON())),

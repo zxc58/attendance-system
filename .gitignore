@@ -3,3 +3,4 @@ logs/*
 .env
 test.js
 remote.json
+remote.log
