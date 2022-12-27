@@ -31,6 +31,10 @@ async function periodFunction (redisClient) {
       logging: false
     })
   ])
+  console.log('today: ')
+  console.log(today.toJSON())
+  console.log('recent date: ')
+  console.log(recentDates)
   await Promise.all([
     redisClient.set('today', JSON.stringify(today.toJSON())),
     redisClient.set('recentDates', JSON.stringify(recentDates))
