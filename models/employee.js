@@ -27,7 +27,9 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Department',
         key: 'id'
       }
-    }
+    },
+    isLocked: DataTypes.BOOLEAN,
+    avatar: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Employee',
