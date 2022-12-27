@@ -10,7 +10,7 @@ const passport = require('./config/passport')
 const router = require('./routes/index')
 const swaggerDocument = require('./swagger/swagger-output.json')
 const redisClient = require('./config/redis')
-const { getNowTime } = require('./helpers/timeHelper')
+const { getNowTime, getRevisedTime } = require('./helpers/timeHelper')
 
 // Constants
 const port = process.env.PORT ?? 3000
