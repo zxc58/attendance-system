@@ -16,6 +16,9 @@ exports.validationCallback = (req, res, next) => {
 }
 exports.distance = (req, res, next) => {
   const { location } = req.body
+  if (!location?.accuracy || !location?.latitude || !location.longitude) {
+    return res.status(400).json({ message: 'Location invalid' })
+  }
   const distance = location.accuracy + geolib.getDistance(companyPosition, location)
   if (distance <= distanceLimit) { return next() }
   return res.status(400).json({ message: 'Location invalid' })

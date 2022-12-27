@@ -24,7 +24,6 @@ app.use('/api', router)
 
 // Listening
 app.listen(port, async () => {
-  console.log('port: ' + (process.env.PORT ?? 3000))
   console.log('Server starts.')
   await redisClient.connect()
   console.log('Redis start.')
