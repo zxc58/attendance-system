@@ -4,8 +4,6 @@ const { Op } = Sequelize
 async function periodFunction (redisClient) {
   const date = getRevisedDate().toDate()
   const before7Date = getRevisedDate().subtract(7, 'd').toDate()
-  console.log(date)
-  console.log(before7Date)
   const [today, recentDates] = await Promise.all([
     Calendar.findOne({
       where: {
@@ -32,8 +30,6 @@ async function periodFunction (redisClient) {
       logging: false
     })
   ])
-  console.log(today.toJSON())
-  console.log(recentDates)
   await Promise.all([
     redisClient.set('today', JSON.stringify(today.toJSON())),
     redisClient.set('recentDates', JSON.stringify(recentDates))
