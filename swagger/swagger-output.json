@@ -21,20 +21,30 @@
         "responses": {}
       }
     },
-    "/api/users/": {
+    "/api/qrcode/new": {
       "get": {
         "tags": [
-          "User"
+          "Qrcode"
+        ],
+        "description": "Get a token for qrcode punch",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/employees/": {
+      "get": {
+        "tags": [
+          "Employee"
         ],
         "description": "Get personal data",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/users/{id}": {
+    "/api/employees/{id}": {
       "put": {
         "tags": [
-          "User"
+          "Employee"
         ],
         "description": "Update personal data",
         "parameters": [
@@ -48,42 +58,42 @@
         "responses": {}
       }
     },
-    "/api/records/today": {
+    "/api/attendances/today": {
       "get": {
         "tags": [
-          "Record"
+          "Attendance"
         ],
-        "description": "Get personal today;s punching",
+        "description": "Get personal today",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/records/recent": {
+    "/api/attendances/recent": {
       "get": {
         "tags": [
-          "Record"
+          "Attendance"
         ],
-        "description": "Get personal punching receet",
+        "description": "Get personal punching recent",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/records/": {
+    "/api/attendances/": {
       "post": {
         "tags": [
           "Record"
         ],
-        "description": "Puching in",
+        "description": "Punch in",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/records/{id}": {
+    "/api/attendances/{id}": {
       "put": {
         "tags": [
           "Record"
         ],
-        "description": "Punching out",
+        "description": "Punch out",
         "parameters": [
           {
             "name": "id",

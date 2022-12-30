@@ -35,8 +35,10 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "qrcode": "^1.5.1",
     "redis": "^4.5.1",
     "sequelize": "^6.27.0",
-    "swagger-ui-express": "^4.6.0"
+    "swagger-ui-express": "^4.6.0",
+    "uuid": "^9.0.0"
   }
 }
