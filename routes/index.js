@@ -4,7 +4,7 @@ const { Router } = require('express')
 const employeeRouter = require('./modules/employees')
 const attendanceRouter = require('./modules/attendances')
 const qrcodeRouter = require('./modules/qrcode')
-const { validator: { distance }, authenticator: { jwtAuthenticator, localAuthenticator } } = require('../middlewares')
+const { authenticator: { jwtAuthenticator, localAuthenticator } } = require('../middlewares')
 
 const router = Router()
 

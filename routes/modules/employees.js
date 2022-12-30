@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const { employeeController } = require('../../controllers')
 const router = Router()
-const { validator: { distance, password, validationCallback } } = require('../../middlewares')
+const { validator: { validatePassword, validationCallback } } = require('../../middlewares')
 router.get(
   '/', employeeController.getEmployee
   // #swagger.tags = ['Employee']
@@ -9,7 +9,7 @@ router.get(
 )
 
 router.put(
-  '/:id', [distance, password, validationCallback], employeeController.putEmployee
+  '/:id', [validatePassword, validationCallback], employeeController.putEmployee
   // #swagger.tags = ['Employee']
   // #swagger.description = 'Update personal data'
 )
