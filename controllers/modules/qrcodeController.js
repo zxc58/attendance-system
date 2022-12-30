@@ -22,7 +22,7 @@ exports.qrPunch = async (req, res, next) => {
       const message = 'Id is expired'
       return res.json({ status: false, message })
     }
-    const dateId = JSON.parse(todayJSON)
+    const dateId = JSON.parse(todayJSON).id
     const attendance = await Attendance.findOne({
       where: {
         dateId,
@@ -33,13 +33,12 @@ exports.qrPunch = async (req, res, next) => {
       attendance.punchOut = punch
       await attendance.save()
     } else {
-      await attendance.create({
+      await Attendance.create({
         employeeId,
         punchIn: punch,
         dateId
       })
     }
-    redisClient.del(punchQrId)
     const message = 'QR code punch successfully'
     return res.json({ status: false, message })
   } catch (err) { next(err) }

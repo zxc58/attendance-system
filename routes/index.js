@@ -9,7 +9,7 @@ const { validator: { distance }, authenticator: { jwtAuthenticator, localAuthent
 const router = Router()
 
 router.post(
-  '/logIn', distance, localAuthenticator
+  '/logIn', localAuthenticator
   // #swagger.tags = ['Sign in']
   // #swagger.description = 'Sign in'
 )

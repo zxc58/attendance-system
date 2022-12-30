@@ -14,6 +14,7 @@ exports.validationCallback = (req, res, next) => {
   }
   return next()
 }
+
 exports.distance = (req, res, next) => {
   const { location } = req.body
   if (!location?.accuracy || !location?.latitude || !location.longitude) {
@@ -23,4 +24,11 @@ exports.distance = (req, res, next) => {
   if (distance <= distanceLimit) { return next() }
   return res.status(400).json({ message: 'Location invalid' })
 }
-// exports.locationCheck = [query(['latitude', 'longtitude'], 'location invalid').isLatLong(),check]
+
+exports.locationCheck = query('location', 'location invalid').custom((value) => {
+  const { accuracy, latitude, longitude } = value
+  if (!accuracy || !latitude || !longitude) { throw new Error('GPS missing required data') }
+  const distance = accuracy + geolib.getDistance(companyPosition, { latitude, longitude })
+  if (!(distance <= distanceLimit)) { throw new Error('Location is out of range') }
+  return true
+})
