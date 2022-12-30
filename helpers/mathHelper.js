@@ -2,6 +2,7 @@
  *
  * @param {*} position1 An object includes latitude and longitude
  * @param {*} position2 An object includes latitude and longitude
+ * 此function已經棄用
  * @returns Distance of 2 places (unit meter)
  */
 exports.distance = function (position1, position2) {

@@ -13,13 +13,18 @@ const jwtConfig = {
 // Register strategy
 passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, password, done) => {
   try {
-    const wrongTimes = await redisClient.get(`account:${account}`)
-    if (+wrongTimes === 5) { return done(null, false, 'Wrong times over 5') }
     const user = await Employee.findOne({ where: { account } })
     if (!user) { return done(null, false, 'Account do not exist') }
+    if (user.isLocked) { return done(null, false, 'Wrong times over 5') }
     if (!bcryptjs.compareSync(password, user.password)) {
-      const newWrongTimes = wrongTimes ? +wrongTimes + 1 : 1
-      redisClient.set(`account:${account}`, newWrongTimes)
+      const wrongTimes = await redisClient.get(`account:${account}`)
+      if (+wrongTimes === 4) {
+        user.isLocked = true
+        await Promise.all([user.save(), redisClient.del(`account:${account}`)])
+      } else {
+        const newWrongTimes = wrongTimes ? +wrongTimes + 1 : 1
+        await redisClient.set(`account:${account}`, newWrongTimes)
+      }
       return done(null, false, 'Password wrong')
     }
     return done(null, user.toJSON())
