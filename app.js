@@ -10,13 +10,15 @@ const passport = require('./config/passport')
 const router = require('./routes/index')
 const swaggerDocument = require('./swagger/swagger-output.json')
 const redisClient = require('./config/redis')
+const cookieParser = require('cookie-parser')
 const { getNowTime, getRevisedTime } = require('./helpers/timeHelper')
-
+const cookieSecret = process.env.COOKIE_SECRET
 // Constants
 const port = process.env.PORT ?? 3000
 const app = express()
 // Middlewares
 app.use(cors())
+app.use(cookieParser(cookieSecret))
 app.use(express.json())
 app.use(passport.initialize())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))

@@ -3,7 +3,7 @@ const timeZoneName = process.env.TIME_ZONE_NAME ?? 'Asia/Taipei'
 const moment = require('moment')
 require('moment-timezone')
 moment.tz.setDefault(timeZoneName)
-
+exports.momentTW = moment
 /**
  *
  * @returns 台灣現在時間的 moment object

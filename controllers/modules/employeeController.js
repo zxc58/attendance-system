@@ -3,7 +3,7 @@ const bcryptjs = require('bcryptjs')
 exports.getEmployee = async (req, res, next) => {
   try {
     const id = req.user.id
-    const employee = await Employee.findByPk(id)
+    const employee = await Employee.findByPk(id, { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } })
     const message = 'Get user data successfully'
     return res.json({ status: true, message, employee: employee.toJSON() })
   } catch (error) { next(error) }

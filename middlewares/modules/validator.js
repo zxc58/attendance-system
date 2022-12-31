@@ -21,7 +21,6 @@ exports.validateLocation = [
 ]
 exports.validationCallback = (req, res, next) => {
   const errors = validationResult(req)
-  console.log(req.query)
   if (!errors.isEmpty()) {
     return res.status(400).json()
   }
