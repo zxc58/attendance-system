@@ -39,6 +39,8 @@ async function periodFunction (redisClient) {
     redisClient.set('punchQrId', punchQrId)
   ])
   const expireTime = getRevisedTime().add(24, 'h').diff(getNowTime(), 's')
+  const timestamp = getRevisedTime().add(24, 'h').valueOf()
+  console.log(`timestamp: ${timestamp}`)
   setTimeout(periodFunction, expireTime * 1000, redisClient)
 }
 module.exports = {

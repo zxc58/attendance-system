@@ -1,30 +1,35 @@
 const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
-const { validator: { distance, punchIn, punchOut, validationCallback } } = require('../../middlewares')
+const { validator: { validateLocation, validatePunchIn, validatePunchOut, validationCallback } } = require('../../middlewares')
 
 const router = Router()
 router.get(
-  '/today', attendanceController.getTodaysRecord
+  '/today',
   // #swagger.tags = ['Attendance']
   // #swagger.description = 'Get personal today's punching'
+  attendanceController.getTodaysRecord
 )
 
 router.get(
-  '/recent', attendanceController.getRecentlRecords
+  '/recent',
   // #swagger.tags = ['Attendance']
   // #swagger.description = 'Get personal punching recent'
+  attendanceController.getRecentlRecords
 )
 
 router.post(
-  '/', [distance, punchIn, validationCallback], attendanceController.postRecord
+  '/',
+  [validateLocation, validatePunchIn, validationCallback],
   // #swagger.tags = ['Record']
   // #swagger.description = 'Punch in'
+  attendanceController.postRecord
 )
 
 router.put(
-  '/:id', [distance, punchOut, validationCallback], attendanceController.putRecord
+  '/:id',
+  [validateLocation, validatePunchOut, validationCallback],
   // #swagger.tags = ['Record']
   // #swagger.description = 'Punch out'
+  attendanceController.putRecord
 )
-
 module.exports = router

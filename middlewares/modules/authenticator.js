@@ -1,5 +1,8 @@
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
+const { signJWT } = require('../../helpers/jwtHelper')
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 const authenticator = {
   localAuthenticator: (req, res, next) => {
     passport.authenticate('local', { session: false }, async (err, user, info) => {
@@ -8,16 +11,15 @@ const authenticator = {
         return res.json({ status: false, message: info })
       }
       if (user) {
-        const id = user.id
-        const token = jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' })
-        return res.json({ status: true, message: 'Get jwt token', token })
+        delete user.password; delete user.createdAt; delete user.updatedAt
+        return signJWT({ res, user })
       }
     })(req, res, next)
   },
   jwtAuthenticator: (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
       if (err) { return next(err) }
-      if (!user) { return res.status(401).json({ status: false, message: 'Wrong error' }) }
+      if (!user && info) { return res.status(401).json({ message: info }) }
       req.user = user
       return next()
     })(req, res, next)
