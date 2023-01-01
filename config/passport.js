@@ -5,10 +5,11 @@ const LocalStrategy = require('passport-local')
 const bcryptjs = require('bcryptjs')
 const redisClient = require('./redis')
 const { Employee } = require('../models')
+const { momentTW, getNowTime } = require('../helpers/timeHelper')
 // Constants
 const jwtConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET
+  secretOrKey: process.env.ACCESS_TOKEN_SECRET
 }
 // Register strategy
 passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, password, done) => {
@@ -30,11 +31,17 @@ passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, pas
     return done(null, user.toJSON())
   } catch (error) { console.error(error); done(error) }
 }))
-passport.use(new JwtStrategy(jwtConfig, async (jwtPayload, done) => {
+
+passport.use(new JwtStrategy(jwtConfig, async (accessTokenPayload, done) => {
   try {
-    const user = await Employee.findByPk(jwtPayload.id, { logging: false })
-    if (!user) { return done(new Error('jwt wrong')) }
-    done(null, user.toJSON())
+    const { user, type, iat, exp } = accessTokenPayload
+    const isExpired = momentTW().isAfter(momentTW(exp * 1000))
+    if (isExpired) {
+      return done(null, null, 'Access is expired')
+    }
+
+    return done(null, user)
   } catch (error) { console.error(error); done(error) }
 }))
+
 module.exports = passport

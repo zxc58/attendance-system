@@ -14,19 +14,53 @@
     "/api/logIn": {
       "post": {
         "tags": [
-          "Sign in"
+          "Auth"
         ],
         "description": "Sign in",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/qrcode/new": {
+    "/api/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "refresh access token",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "refreshToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/qrcode/": {
       "get": {
         "tags": [
           "Qrcode"
         ],
         "description": "Get a token for qrcode punch",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/qrcode/punch": {
+      "post": {
+        "description": "",
         "parameters": [],
         "responses": {}
       }
