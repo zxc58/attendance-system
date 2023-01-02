@@ -2,8 +2,7 @@
 const { Op } = require('sequelize')
 const { Attendance, Calendar } = require('../../models')
 const redisClient = require('../../config/redis')
-// Constants
-//
+const httpStatus = require('http-status')
 exports.getRecentlRecords = async (req, res, next) => { // For recent punching
   try {
     const { id: employeeId } = req.user
@@ -28,7 +27,7 @@ exports.getRecentlRecords = async (req, res, next) => { // For recent punching
       order: [['date', 'DESC']]
     })
     const message = 'Get records success'
-    return res.json({ status: true, message, attendances })
+    return res.json({ message, attendances })
   } catch (error) { next(error) }
 }
 
@@ -46,10 +45,10 @@ exports.getTodaysRecord = async (req, res, next) => { // For today punch
     })
     if (!attendance) {
       const message = 'You have not punched in yet'
-      return res.json({ status: false, message })
+      return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     const message = 'Get today punching successfully'
-    return res.json({ status: true, message, attendance: attendance.toJSON() })
+    return res.json({ message, attendance: attendance.toJSON() })
   } catch (error) { next(error) }
 }
 
@@ -63,7 +62,7 @@ exports.postRecord = async (req, res, next) => { // For punch in
     const attendance = await Attendance.create({ dateId, employeeId, punchIn })
     if (!attendance) { throw new Error('Punch in failed') }
     const message = 'Punch in successfully'
-    return res.json({ status: true, message, attendance: attendance.toJSON() })
+    return res.json({ message, attendance: attendance.toJSON() })
   } catch (error) { next(error) }
 }
 
@@ -77,6 +76,6 @@ exports.putRecord = async (req, res, next) => { // For punch out
     attendance.punchOut = punchOut
     const returning = await attendance.save()
     const message = 'Punch out successfully'
-    return res.json({ status: true, message, attendance: returning.toJSON() })
+    return res.json({ message, attendance: returning.toJSON() })
   } catch (error) { next(error) }
 }
