@@ -12,7 +12,7 @@ const authenticator = {
       }
       if (user) {
         delete user.password; delete user.createdAt; delete user.updatedAt
-        return signJWT({ res, user })
+        return signJWT({ res, user, getRefreshToken: true })
       }
     })(req, res, next)
   },
