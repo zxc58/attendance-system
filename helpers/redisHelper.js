@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid')
 
 async function periodFunction (redisClient) {
   const date = getRevisedDate().toDate()
-  const before7Date = getRevisedDate().subtract(7, 'd').toDate()
+  const before30Date = getRevisedDate().subtract(30, 'd').toDate()
   const punchQrId = uuidv4()
   const [today, recentDates] = await Promise.all([
     Calendar.findOne({
@@ -20,7 +20,7 @@ async function periodFunction (redisClient) {
     Calendar.findAll({
       where: {
         date: {
-          [Op.gte]: before7Date,
+          [Op.gte]: before30Date,
           [Op.lt]: date
         }
       },
@@ -39,7 +39,6 @@ async function periodFunction (redisClient) {
     redisClient.set('punchQrId', punchQrId)
   ])
   const expireTime = getRevisedTime().add(24, 'h').diff(getNowTime(), 's')
-  const timestamp = getRevisedTime().add(24, 'h').valueOf()
   setTimeout(periodFunction, expireTime * 1000, redisClient)
 }
 module.exports = {

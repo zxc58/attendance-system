@@ -1,6 +1,6 @@
 {
   "name": "attendance-system",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -20,7 +20,6 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
-    "morgan": "^1.10.0",
     "swagger-autogen": "^2.22.0"
   },
   "dependencies": {
@@ -31,9 +30,11 @@
     "express": "^4.18.2",
     "express-validator": "^6.14.2",
     "geolib": "^3.3.3",
+    "http-status": "^1.6.1",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
+    "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",

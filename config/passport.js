@@ -5,7 +5,7 @@ const LocalStrategy = require('passport-local')
 const bcryptjs = require('bcryptjs')
 const redisClient = require('./redis')
 const { Employee } = require('../models')
-const { momentTW, getNowTime } = require('../helpers/timeHelper')
+const { momentTW } = require('../helpers/timeHelper')
 // Constants
 const jwtConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -34,7 +34,7 @@ passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, pas
 
 passport.use(new JwtStrategy(jwtConfig, async (accessTokenPayload, done) => {
   try {
-    const { user, type, iat, exp } = accessTokenPayload
+    const { user, exp } = accessTokenPayload
     const isExpired = momentTW().isAfter(momentTW(exp * 1000))
     if (isExpired) {
       return done(null, null, 'Access is expired')
