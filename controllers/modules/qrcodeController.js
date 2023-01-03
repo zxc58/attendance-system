@@ -1,7 +1,5 @@
-const qrcode = require('qrcode')
-const { v4: uuidv4 } = require('uuid')
 const redisClient = require('../../config/redis')
-const { Employee, Attendance } = require('../../models')
+const { Attendance } = require('../../models')
 const httpStatus = require('http-status')
 exports.getQrcode = async (req, res, next) => {
   try {
@@ -20,7 +18,7 @@ exports.qrPunch = async (req, res, next) => {
     ])
     if (!(checkUuid === punchQrId)) {
       const message = 'Id is expired'
-      return res.status(httpStatus.NOT_FOUND).json({ status: false, message })
+      return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     const dateId = JSON.parse(todayJSON).id
     const attendance = await Attendance.findOne({

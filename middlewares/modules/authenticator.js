@@ -1,8 +1,5 @@
-const passport = require('passport')
-const jwt = require('jsonwebtoken')
+const passport = require('../../config/passport')
 const { signJWT } = require('../../helpers/jwtHelper')
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 const httpStatus = require('http-status')
 const authenticator = {
   localAuthenticator: (req, res, next) => {

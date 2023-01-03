@@ -7,9 +7,7 @@ const attendanceRouter = require('./modules/attendances')
 const qrcodeRouter = require('./modules/qrcode')
 const { authenticator: { jwtAuthenticator, localAuthenticator } } = require('../middlewares')
 const jwt = require('jsonwebtoken')
-const { momentTW } = require('../helpers/timeHelper')
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const router = Router()
 const { signJWT } = require('../helpers/jwtHelper')
 router.post(

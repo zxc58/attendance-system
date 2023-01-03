@@ -1,4 +1,4 @@
-const { body, query, validationResult, buildCheckFunction, check } = require('express-validator')
+const { body, query, validationResult } = require('express-validator')
 const geolib = require('geolib')
 const companyPosition = process.env.COMPANY_POSITION ?? { latitude: 25.04712450557659, longitude: 121.44501747146609 }
 const distanceLimit = Number(process.env.DISTANCE_LIMIT ?? 400)
