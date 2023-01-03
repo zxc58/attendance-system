@@ -1,12 +1,10 @@
-const qrcode = require('qrcode')
-const { v4: uuidv4 } = require('uuid')
 const redisClient = require('../../config/redis')
-const { Employee, Attendance } = require('../../models')
-
+const { Attendance } = require('../../models')
+const httpStatus = require('http-status')
 exports.getQrcode = async (req, res, next) => {
   try {
     const punchQrId = await redisClient.get('punchQrId')
-    return res.json({ status: true, message: 'get qr successfully', punchQrId })
+    return res.json({ message: 'get qr successfully', punchQrId })
   } catch (err) { next(err) }
 }
 
@@ -20,7 +18,7 @@ exports.qrPunch = async (req, res, next) => {
     ])
     if (!(checkUuid === punchQrId)) {
       const message = 'Id is expired'
-      return res.json({ status: false, message })
+      return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     const dateId = JSON.parse(todayJSON).id
     const attendance = await Attendance.findOne({
@@ -40,6 +38,6 @@ exports.qrPunch = async (req, res, next) => {
       })
     }
     const message = 'QR code punch successfully'
-    return res.json({ status: false, message })
+    return res.json({ message })
   } catch (err) { next(err) }
 }

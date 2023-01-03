@@ -1,14 +1,12 @@
-const passport = require('passport')
-const jwt = require('jsonwebtoken')
+const passport = require('../../config/passport')
 const { signJWT } = require('../../helpers/jwtHelper')
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
+const httpStatus = require('http-status')
 const authenticator = {
   localAuthenticator: (req, res, next) => {
     passport.authenticate('local', { session: false }, async (err, user, info) => {
       if (err) { return next(err) }
       if (info && !user) {
-        return res.json({ status: false, message: info })
+        return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
       }
       if (user) {
         delete user.password; delete user.createdAt; delete user.updatedAt
@@ -19,7 +17,7 @@ const authenticator = {
   jwtAuthenticator: (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
       if (err) { return next(err) }
-      if (!user && info) { return res.status(401).json({ message: info }) }
+      if (!user && info) { return res.status(httpStatus.UNAUTHORIZED).json({ message: info }) }
       req.user = user
       return next()
     })(req, res, next)
