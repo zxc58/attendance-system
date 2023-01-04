@@ -1,42 +1,28 @@
 const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
-const { validator: { validateLocation, validatePunchIn, validatePunchOut, validationCallback } } = require('../../middlewares')
-
+const { authenticator: { jwtAuthenticator } } = require('../../middlewares')
 const router = Router()
-router.get(
-  '/today',
-  // #swagger.tags = ['Attendance']
-  // #swagger.description = 'Get personal today's punching'
-  attendanceController.getTodaysRecord
-)
 
 router.get(
-  '/recent',
+  '/unworking',
+  jwtAuthenticator,
+  attendanceController.unworking
   // #swagger.tags = ['Attendance']
-  // #swagger.description = 'Get personal punching recent'
-  attendanceController.getRecentlRecords
-)
+  // #swagger.description = 'Get unworking employees'
 
+)
+router.get(
+  '/qrcode',
+  attendanceController.getQrcode
+  // #swagger.tags = ['QR']
+  // #swagger.description = 'Get qrcode value'
+)
 router.post(
-  '/',
-  [validateLocation, validatePunchIn, validationCallback],
-  // #swagger.tags = ['Attendance']
-  // #swagger.description = 'Punch in'
-  attendanceController.postRecord
+  '/qrcode',
+  jwtAuthenticator,
+  attendanceController.qrPunch
+  // #swagger.tags = ['QR']
+  // #swagger.description = 'Api for qr punch'
 )
 
-router.patch(
-  '/:id',
-  [validateLocation, validatePunchOut, validationCallback],
-  attendanceController.putRecord
-  // #swagger.tags = ['Attendance']
-  // #swagger.description = 'Punch out'
-)
-
-router.put(
-  '/',
-  attendanceController.clearAbsenteeism
-  // #swagger.tags = ['Attendance']
-  // #swagger.description = 'For clear absenteeism'
-)
 module.exports = router

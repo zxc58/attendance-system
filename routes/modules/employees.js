@@ -1,29 +1,36 @@
 const { Router } = require('express')
-const { employeeController } = require('../../controllers')
+const { employeeController, attendanceController } = require('../../controllers')
 const router = Router()
-const { validator: { validateQueryDate, validatePassword, validationCallback } } = require('../../middlewares')
+
 router.get(
-  '/absenteeism',
-  [validateQueryDate, validationCallback],
-  employeeController.getAbsenteeism
-  // #swagger.tags = ['Employee']
-  // #swagger.description = 'Get absenteeism employee today'
-)
-router.get(
-  '/', employeeController.getEmployee
+  '/:id',
+  employeeController.getEmployee
   // #swagger.tags = ['Employee']
   // #swagger.description = 'Get personal data'
 )
-
+router.get(
+  '/:id/attendances',
+  employeeController.getPersonalAttendances
+  // #swagger.tags = ['Attendance']
+  // #swagger.description = 'Get personal attendances'
+)
 router.patch(
-  '/:id', [validatePassword, validationCallback], employeeController.putEmployee
+  '/:id',
+  employeeController.patchEmployee
   // #swagger.tags = ['Employee']
   // #swagger.description = 'Update personal data'
 )
-router.put(
-  '/:id/unlocked', employeeController.unlockedAccount
-  // #swagger.tags = ['Employee']
-  // #swagger.description = 'Unlocked account'
+router.post(
+  '/:id/attendances',
+  attendanceController.punchIn
+  // #swagger.tags = ['Attendance']
+  // #swagger.description = 'Api for employee punch in'
+)
+router.patch(
+  '/:employeeId/attendances/:attendanceId',
+  attendanceController.punchOut
+  // #swagger.tags = ['Attendance']
+  // #swagger.description = 'Api for employee punch out'
 )
 
 module.exports = router

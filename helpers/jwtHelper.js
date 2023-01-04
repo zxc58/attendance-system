@@ -11,7 +11,7 @@ exports.signJWT = ({ res, user, getRefreshToken }) => {
     { expiresIn: `${accessTokenMaxage}s` }
   )
   const accessTokenExpiredTime = momentTW().add(50, 's').toDate()
-  const responseData = { accessToken, accessTokenExpiredTime }
+  const responseData = { userId: user.id, accessToken, accessTokenExpiredTime }
   if (getRefreshToken) {
     const refreshToken = jwt.sign(
       { type: 'refresh_token', userId: user.id },

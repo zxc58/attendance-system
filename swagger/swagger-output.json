@@ -11,22 +11,22 @@
     "http"
   ],
   "paths": {
-    "/api/logIn": {
+    "/auth/login": {
       "post": {
         "tags": [
           "Auth"
         ],
-        "description": "Sign in",
+        "description": "Api for sign in",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/refresh": {
+    "/auth/refresh": {
       "post": {
         "tags": [
           "Auth"
         ],
-        "description": "refresh access token",
+        "description": "Api for refresh access token",
         "parameters": [
           {
             "name": "body",
@@ -44,48 +44,51 @@
         "responses": {}
       }
     },
-    "/api/qrcode/": {
+    "/attendances/unworking": {
       "get": {
         "tags": [
-          "Qrcode"
+          "Attendance"
         ],
-        "description": "Get a token for qrcode punch",
+        "description": "Get unworking employees",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/qrcode/punch": {
+    "/attendances/qrcode": {
+      "get": {
+        "tags": [
+          "QR"
+        ],
+        "description": "Get qrcode value",
+        "parameters": [],
+        "responses": {}
+      },
       "post": {
         "tags": [
-          "Qrcode"
+          "QR"
         ],
-        "description": "Qrcode punch",
+        "description": "Api for qr punch",
         "parameters": [],
         "responses": {}
       }
     },
-    "/api/employees/absenteeism": {
-      "get": {
-        "tags": [
-          "Employee"
-        ],
-        "description": "Get absenteeism employee today",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/api/employees/": {
+    "/employees/{id}": {
       "get": {
         "tags": [
           "Employee"
         ],
         "description": "Get personal data",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {}
-      }
-    },
-    "/api/employees/{id}": {
-      "put": {
+      },
+      "patch": {
         "tags": [
           "Employee"
         ],
@@ -101,59 +104,12 @@
         "responses": {}
       }
     },
-    "/api/employees/{id}/unlocked": {
-      "put": {
-        "tags": [
-          "Employee"
-        ],
-        "description": "Unlocked account",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {}
-      }
-    },
-    "/api/attendances/today": {
+    "/employees/{id}/attendances": {
       "get": {
         "tags": [
           "Attendance"
         ],
-        "description": "Get personal today",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/api/attendances/recent": {
-      "get": {
-        "tags": [
-          "Attendance"
-        ],
-        "description": "Get personal punching recent",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/api/attendances/": {
-      "post": {
-        "tags": [
-          "Attendance"
-        ],
-        "description": "Punch in",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/api/attendances/{id}": {
-      "patch": {
-        "tags": [
-          "Attendance"
-        ],
-        "description": "Punch out",
+        "description": "Get personal attendances",
         "parameters": [
           {
             "name": "id",
@@ -164,14 +120,37 @@
         ],
         "responses": {}
       },
-      "put": {
+      "post": {
         "tags": [
           "Attendance"
         ],
-        "description": "For clear absenteeism",
+        "description": "Api for employee punch in",
         "parameters": [
           {
             "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employees/{employeeId}/attendances/{attendanceId}": {
+      "patch": {
+        "tags": [
+          "Attendance"
+        ],
+        "description": "Api for employee punch out",
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "attendanceId",
             "in": "path",
             "required": true,
             "type": "string"
