@@ -20,16 +20,23 @@ router.get(
 router.post(
   '/',
   [validateLocation, validatePunchIn, validationCallback],
-  // #swagger.tags = ['Record']
+  // #swagger.tags = ['Attendance']
   // #swagger.description = 'Punch in'
   attendanceController.postRecord
 )
 
-router.put(
+router.patch(
   '/:id',
   [validateLocation, validatePunchOut, validationCallback],
-  // #swagger.tags = ['Record']
-  // #swagger.description = 'Punch out'
   attendanceController.putRecord
+  // #swagger.tags = ['Attendance']
+  // #swagger.description = 'Punch out'
+)
+
+router.put(
+  '/',
+  attendanceController.clearAbsenteeism
+  // #swagger.tags = ['Attendance']
+  // #swagger.description = 'For clear absenteeism'
 )
 module.exports = router

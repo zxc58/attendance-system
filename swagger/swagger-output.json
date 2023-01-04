@@ -41,11 +41,7 @@
             }
           }
         ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
+        "responses": {}
       }
     },
     "/api/qrcode/": {
@@ -60,7 +56,20 @@
     },
     "/api/qrcode/punch": {
       "post": {
-        "description": "",
+        "tags": [
+          "Qrcode"
+        ],
+        "description": "Qrcode punch",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/api/employees/absenteeism": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Get absenteeism employee today",
         "parameters": [],
         "responses": {}
       }
@@ -81,6 +90,23 @@
           "Employee"
         ],
         "description": "Update personal data",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/api/employees/{id}/unlocked": {
+      "put": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Unlocked account",
         "parameters": [
           {
             "name": "id",
@@ -115,7 +141,7 @@
     "/api/attendances/": {
       "post": {
         "tags": [
-          "Record"
+          "Attendance"
         ],
         "description": "Punch in",
         "parameters": [],
@@ -123,11 +149,26 @@
       }
     },
     "/api/attendances/{id}": {
-      "put": {
+      "patch": {
         "tags": [
-          "Record"
+          "Attendance"
         ],
         "description": "Punch out",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      },
+      "put": {
+        "tags": [
+          "Attendance"
+        ],
+        "description": "For clear absenteeism",
         "parameters": [
           {
             "name": "id",

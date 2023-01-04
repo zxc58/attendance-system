@@ -1,8 +1,9 @@
 // Requirements
-const { Op } = require('sequelize')
-const { Attendance, Calendar } = require('../../models')
+const { Attendance, Calendar, Sequelize } = require('../../models')
+const { Op } = Sequelize
 const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
+const { momentTW } = require('../../helpers/timeHelper')
 exports.getRecentlRecords = async (req, res, next) => { // For recent punching
   try {
     const { id: employeeId } = req.user
@@ -70,7 +71,6 @@ exports.putRecord = async (req, res, next) => { // For punch out
   try {
     const { id } = req.params
     const { punchOut } = req.body
-    if (!id || !punchOut) { throw new Error('Lack neccessary vars') }
     const attendance = await Attendance.findByPk(id)
     if (!attendance) { throw new Error('req.params.id is wrong') }
     attendance.punchOut = punchOut
@@ -78,4 +78,29 @@ exports.putRecord = async (req, res, next) => { // For punch out
     const message = 'Punch out successfully'
     return res.json({ message, attendance: returning.toJSON() })
   } catch (error) { next(error) }
+}
+exports.clearAbsenteeism = async (req, res, next) => {
+  try {
+    const { employeeId, dateId } = req.body
+
+    const attendance = await Attendance.findOne({
+      where: {
+        dateId, employeeId
+      }
+    })
+    if (!attendance) {
+      const date = await Calendar.findByPk(dateId)
+      const punchIn = momentTW(date.date).add(16, 'h').toDate()
+      const punchOut = momentTW(date.date).add(24, 'h').toDate()
+      await Attendance.create({
+        employeeId, dateId, punchIn, punchOut
+      })
+    } else {
+      const punchOut = momentTW(attendance.punchIn).add(8, 'h').toDate()
+      attendance.punchOut = punchOut
+      await attendance.save()
+    }
+    const message = 'modify attendance successfully'
+    return res.json({ message })
+  } catch (err) { next(err) }
 }
