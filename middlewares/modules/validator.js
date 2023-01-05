@@ -7,6 +7,10 @@ exports.validateAccount = body('account').isLength({ min: 7, max: 14 }).isAlphan
 exports.validatePassword = body('password').isLength({ min: 7, max: 14 }).isAlphanumeric()
 exports.validatePunchIn = body('punchIn').isISO8601()
 exports.validatePunchOut = body('punchOut').isISO8601()
+exports.validateQueryDate = query('date').custom(value => {
+  if (['today'].includes(value)) { return true }
+  throw new Error('Query date is invalid ')
+})
 exports.validateLocation = [
   query('location.latitude').toFloat(),
   query('location.longitude').toFloat(),
@@ -22,7 +26,8 @@ exports.validateLocation = [
 exports.validationCallback = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.status(httpStatus.BAD_REQUEST).json()
+    const message = 'express-validator error'
+    return res.status(httpStatus.BAD_REQUEST).json({ message, errors: errors.array() })
   }
   return next()
 }
