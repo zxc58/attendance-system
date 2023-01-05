@@ -17,8 +17,10 @@ exports.patchEmployee = async (req, res, next) => {
     const { id } = req.params
     const newData = { ...req.body }
     const employee = await Employee.findByPk(id)
-    const hash = bcryptjs.hashSync(newData.password)
-    newData.password = hash
+    if (newData.password) {
+      const hash = bcryptjs.hashSync(newData.password)
+      newData.password = hash
+    }
     employee.set(newData)
     const newEmployee = await employee.save()
     const message = 'update password successfully'
@@ -29,6 +31,7 @@ exports.getPersonalAttendances = async (req, res, next) => {
   try {
     const { id: employeeId } = req.params
     const { date } = req.query
+    const { hireDateId } = req.user
     if (date === 'today') {
       const todayJSON = await redisClient.get('today')
       const today = JSON.parse(todayJSON)
@@ -51,7 +54,8 @@ exports.getPersonalAttendances = async (req, res, next) => {
       const attendances = await Calendar.findAll({
         where: {
           id: {
-            [Op.in]: dateIds
+            [Op.in]: dateIds,
+            [Op.gte]: hireDateId
           }
         },
         include: {
@@ -67,6 +71,23 @@ exports.getPersonalAttendances = async (req, res, next) => {
       })
       const message = 'Get records success'
       return res.json({ message, attendances })
+    }
+  } catch (err) { next(err) }
+}
+exports.getEmployees = async (req, res, next) => {
+  try {
+    const { status } = req.query
+    let employees, message
+    switch (status) {
+      case 'locked':
+        employees = await Employee.findAll({
+          where: { isLocked: true },
+          attributes: ['id', 'name', 'account'],
+          raw: true,
+          nest: true
+        })
+        message = 'Get locked users successfully'
+        return res.json({ message, employees })
     }
   } catch (err) { next(err) }
 }

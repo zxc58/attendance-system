@@ -1,6 +1,10 @@
 const { body, query, validationResult } = require('express-validator')
 const geolib = require('geolib')
-const companyPosition = process.env.COMPANY_POSITION ?? { latitude: 25.04712450557659, longitude: 121.44501747146609 }
+
+const companyPosition = {
+  latitude: Number(process.env.COMPANY_LATITUDE),
+  longitude: Number(process.env.COMPANY_LONGITUDE)
+}
 const distanceLimit = Number(process.env.DISTANCE_LIMIT ?? 400)
 const httpStatus = require('http-status')
 exports.validateAccount = body('account').isLength({ min: 7, max: 14 }).isAlphanumeric()

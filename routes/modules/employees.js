@@ -1,7 +1,12 @@
 const { Router } = require('express')
 const { employeeController, attendanceController } = require('../../controllers')
 const router = Router()
-
+router.get(
+  '/',
+  employeeController.getEmployees
+  // #swagger.tags = ['Employee']
+  // #swagger.description = 'Get employees data'
+)
 router.get(
   '/:id',
   employeeController.getEmployee

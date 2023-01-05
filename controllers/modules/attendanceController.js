@@ -1,5 +1,5 @@
 // Requirements
-const { Attendance, Employee } = require('../../models')
+const { Attendance, Employee, Department, sequelize } = require('../../models')
 const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
 
@@ -70,16 +70,20 @@ exports.unworking = async (req, res, next) => {
     const todayJSON = await redisClient.get('today')
     const dateId = JSON.parse(todayJSON).id
     const employees = await Employee.findAll({
-      include: {
+      where: {
+        '$Attendances.id$': null
+      },
+      include: [{
         model: Attendance,
         required: false,
         where: {
           dateId
         },
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
-
-      },
-      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        attributes: []
+      }, {
+        model: Department, attributes: []
+      }],
+      attributes: ['id', 'name', 'phone', [sequelize.col('Department.name'), 'departmentName']],
       raw: true,
       nest: true
     })

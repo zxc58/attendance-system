@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
   class Calendar extends Model {
     static associate (models) {
       Calendar.hasMany(models.Attendance, { foreignKey: 'dateId' })
+      Calendar.hasMany(models.Employee, { foreignKey: 'hireDateId' })
     }
   }
   Calendar.init({

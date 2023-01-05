@@ -72,6 +72,16 @@
         "responses": {}
       }
     },
+    "/employees/": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Get employees data",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/employees/{id}": {
       "get": {
         "tags": [
