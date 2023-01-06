@@ -1,8 +1,8 @@
 // Requirements
-const { Attendance, Employee, Department, sequelize } = require('../../models')
-const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
-
+const redisClient = require('../../config/redis')
+const { Attendance, Employee, Department, sequelize, Sequelize } = require('../../models')
+const { or, lt } = Sequelize.Op
 exports.getQrcode = async (req, res, next) => {
   try {
     const punchQrId = await redisClient.get('punchQrId')
@@ -89,5 +89,42 @@ exports.unworking = async (req, res, next) => {
     })
     const message = 'Get unworking employees successfully'
     return res.json({ message, employees })
+  } catch (err) { next(err) }
+}
+exports.getAttendances = async (req, res, next) => {
+  try {
+    const { status } = req.query
+    let attendances, message
+    switch (status) {
+      case 'error_attendances':
+        attendances = await Attendance.findAll({
+          attributes:
+           ['id', 'employeeId', 'dateId', 'punchIn', 'punchOut',
+             [sequelize.fn(
+               'TIMESTAMPDIFF',
+               sequelize.literal('HOUR'),
+               sequelize.literal('punch_in'),
+               sequelize.literal('punch_out')
+             ), 'diff']
+           ],
+          having: {
+            [or]: [
+              {
+                diff: {
+                  [lt]: 8
+                }
+              },
+              { punchOut: null }
+            ]
+          },
+          raw: true,
+          nest: true
+        })
+        message = 'Get error attendances successfully'
+        return res.json({ message, attendances })
+      default:
+        message = 'please use "state" query parameters'
+        return res.status(httpStatus.NOT_FOUND).json({ message })
+    }
   } catch (err) { next(err) }
 }
