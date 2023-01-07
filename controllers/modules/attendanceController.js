@@ -1,8 +1,7 @@
 // Requirements
-const { Attendance, Employee } = require('../../models')
-const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
-
+const redisClient = require('../../config/redis')
+const { Attendance } = require('../../models')
 exports.getQrcode = async (req, res, next) => {
   try {
     const punchQrId = await redisClient.get('punchQrId')
@@ -64,26 +63,4 @@ exports.punchOut = async (req, res, next) => {
     const message = 'Punch out successfully'
     return res.json({ message, attendance: newAttendance.toJSON() })
   } catch (error) { next(error) }
-}
-exports.unworking = async (req, res, next) => {
-  try {
-    const todayJSON = await redisClient.get('today')
-    const dateId = JSON.parse(todayJSON).id
-    const employees = await Employee.findAll({
-      include: {
-        model: Attendance,
-        required: false,
-        where: {
-          dateId
-        },
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
-
-      },
-      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-      raw: true,
-      nest: true
-    })
-    const message = 'Get unworking employees successfully'
-    return res.json({ message, employees })
-  } catch (err) { next(err) }
 }

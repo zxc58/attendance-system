@@ -2,7 +2,7 @@ const passport = require('../../config/passport')
 const { signJWT } = require('../../helpers/jwtHelper')
 const httpStatus = require('http-status')
 const authenticator = {
-  localAuthenticator: (req, res, next) => {
+  localAuth: (req, res, next) => {
     passport.authenticate('local', { session: false }, async (err, user, info) => {
       if (err) { return next(err) }
       if (info && !user) {
@@ -14,7 +14,7 @@ const authenticator = {
       }
     })(req, res, next)
   },
-  jwtAuthenticator: (req, res, next) => {
+  jwtAuth: (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
       if (err) { return next(err) }
       if (!user && info) { return res.status(httpStatus.UNAUTHORIZED).json({ message: info }) }
@@ -25,6 +25,14 @@ const authenticator = {
   antiJwtAuthenticator: (req, res, next) => {
     if (req.get('Authorization')) { return next(new Error('Already sign in')) }
     return next()
+  },
+  adminAuth: (req, res, next) => {
+    // console.log(req.user)
+    const { isAdmin } = req.user
+    if (isAdmin) { return next() }
+    const message = 'this api is for admin'
+    return res.status(httpStatus.FORBIDDEN).json({ message })
+    // next()
   }
 }
 module.exports = authenticator

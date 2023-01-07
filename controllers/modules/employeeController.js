@@ -17,8 +17,10 @@ exports.patchEmployee = async (req, res, next) => {
     const { id } = req.params
     const newData = { ...req.body }
     const employee = await Employee.findByPk(id)
-    const hash = bcryptjs.hashSync(newData.password)
-    newData.password = hash
+    if (newData.password) {
+      const hash = bcryptjs.hashSync(newData.password)
+      newData.password = hash
+    }
     employee.set(newData)
     const newEmployee = await employee.save()
     const message = 'update password successfully'
@@ -29,6 +31,7 @@ exports.getPersonalAttendances = async (req, res, next) => {
   try {
     const { id: employeeId } = req.params
     const { date } = req.query
+    const { hireDateId } = req.user
     if (date === 'today') {
       const todayJSON = await redisClient.get('today')
       const today = JSON.parse(todayJSON)
@@ -41,7 +44,7 @@ exports.getPersonalAttendances = async (req, res, next) => {
       })
       if (!attendance) {
         const message = 'You have not punched in yet'
-        return res.status(httpStatus.NOT_FOUND).json({ message })
+        return res.json({ message, attendances: null })
       }
       const message = 'Get today punching successfully'
       return res.json({ message, attendances: attendance.toJSON() })
@@ -51,7 +54,8 @@ exports.getPersonalAttendances = async (req, res, next) => {
       const attendances = await Calendar.findAll({
         where: {
           id: {
-            [Op.in]: dateIds
+            [Op.in]: dateIds,
+            [Op.gte]: hireDateId
           }
         },
         include: {
