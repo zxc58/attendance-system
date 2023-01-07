@@ -15,12 +15,12 @@ exports.getEmployee = async (req, res, next) => {
 exports.patchEmployee = async (req, res, next) => {
   try {
     const { id } = req.params
-    const newData = { ...req.body }
+    const { password, phone, email } = req.body
+    const newData = {}
+    if (password) { newData.password = password }
+    if (phone) { newData.phone = phone }
+    if (email) { newData.email = email }
     const employee = await Employee.findByPk(id)
-    if (newData.password) {
-      const hash = bcryptjs.hashSync(newData.password)
-      newData.password = hash
-    }
     employee.set(newData)
     const newEmployee = await employee.save()
     const message = 'update password successfully'

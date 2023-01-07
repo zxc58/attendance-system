@@ -27,12 +27,10 @@ const authenticator = {
     return next()
   },
   adminAuth: (req, res, next) => {
-    // console.log(req.user)
     const { isAdmin } = req.user
     if (isAdmin) { return next() }
     const message = 'this api is for admin'
     return res.status(httpStatus.FORBIDDEN).json({ message })
-    // next()
   }
 }
 module.exports = authenticator

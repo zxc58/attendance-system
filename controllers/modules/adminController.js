@@ -103,7 +103,6 @@ exports.modifyAttendance = async (req, res, next) => {
     const date = attendance.Calendar.date
     const newPunchIn = momentTW(date).add(8, 'h').toDate()
     const newPunchOut = momentTW(date).add(16, 'h').toDate()
-    console.log(newPunchIn, '\n', newPunchOut)
     attendance.punchIn = newPunchIn
     attendance.punchOut = newPunchOut
     const newAttendance = await attendance.save()
