@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Employee.hasMany(models.Attendance, { foreignKey: 'employeeId' })
+      Employee.belongsTo(models.Calendar, { foreignKey: 'hireDateId' })
+      Employee.belongsTo(models.Department, { foreignKey: 'departmentId' })
     }
   }
   Employee.init({
@@ -19,7 +21,13 @@ module.exports = (sequelize, DataTypes) => {
     account: DataTypes.STRING,
     password: DataTypes.STRING,
     phone: DataTypes.STRING,
-    hireDate: DataTypes.DATEONLY,
+    hireDateId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Calendar',
+        key: 'id'
+      }
+    },
     isAdmin: DataTypes.BOOLEAN,
     departmentId: {
       type: DataTypes.INTEGER,

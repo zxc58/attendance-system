@@ -29,12 +29,18 @@ module.exports = {
       phone: {
         type: Sequelize.STRING
       },
-      hire_date: {
-        type: Sequelize.DATEONLY
+      hire_date_id: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Calendar',
+          key: 'id'
+        }
       },
       is_admin: {
-        defaultValue: false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       department_id: {
         type: Sequelize.INTEGER,

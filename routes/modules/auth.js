@@ -3,12 +3,12 @@ const httpStatus = require('http-status')
 const jwt = require('jsonwebtoken')
 const { Employee } = require('../../models')
 const { signJWT } = require('../../helpers/jwtHelper')
-const { authenticator: { localAuthenticator } } = require('../../middlewares')
+const { authenticator: { localAuth } } = require('../../middlewares')
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 const router = Router()
 router.post(
   '/login',
-  localAuthenticator
+  localAuth
   // #swagger.tags = ['Auth']
   // #swagger.description = 'Api for sign in'
 )
