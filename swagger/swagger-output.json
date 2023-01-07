@@ -44,16 +44,6 @@
         "responses": {}
       }
     },
-    "/attendances/unworking": {
-      "get": {
-        "tags": [
-          "Attendance"
-        ],
-        "description": "Get unworking employees",
-        "parameters": [],
-        "responses": {}
-      }
-    },
     "/attendances/qrcode": {
       "get": {
         "tags": [
@@ -68,16 +58,6 @@
           "QR"
         ],
         "description": "Api for qr punch",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/employees/": {
-      "get": {
-        "tags": [
-          "Employee"
-        ],
-        "description": "Get employees data",
         "parameters": [],
         "responses": {}
       }
@@ -161,6 +141,63 @@
           },
           {
             "name": "attendanceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/admin/unworking": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Get unwork employees",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/admin/locked": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Get locked accounts",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/admin/unlock": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "Unlock an account",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/admin/absenteeism": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "get absenteeism employees",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/admin/attendances/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "description": "modify Attendance ",
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"

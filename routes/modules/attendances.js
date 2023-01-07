@@ -1,16 +1,8 @@
 const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
-const { authenticator: { jwtAuthenticator } } = require('../../middlewares')
+const { authenticator: { jwtAuth } } = require('../../middlewares')
 const router = Router()
 
-router.get(
-  '/unworking',
-  jwtAuthenticator,
-  attendanceController.unworking
-  // #swagger.tags = ['Attendance']
-  // #swagger.description = 'Get unworking employees'
-
-)
 router.get(
   '/qrcode',
   attendanceController.getQrcode
@@ -19,7 +11,7 @@ router.get(
 )
 router.post(
   '/qrcode',
-  jwtAuthenticator,
+  jwtAuth,
   attendanceController.qrPunch
   // #swagger.tags = ['QR']
   // #swagger.description = 'Api for qr punch'

@@ -44,7 +44,7 @@ exports.getPersonalAttendances = async (req, res, next) => {
       })
       if (!attendance) {
         const message = 'You have not punched in yet'
-        return res.status(httpStatus.NOT_FOUND).json({ message })
+        return res.json({ message, attendances: null })
       }
       const message = 'Get today punching successfully'
       return res.json({ message, attendances: attendance.toJSON() })
@@ -71,23 +71,6 @@ exports.getPersonalAttendances = async (req, res, next) => {
       })
       const message = 'Get records success'
       return res.json({ message, attendances })
-    }
-  } catch (err) { next(err) }
-}
-exports.getEmployees = async (req, res, next) => {
-  try {
-    const { status } = req.query
-    let employees, message
-    switch (status) {
-      case 'locked':
-        employees = await Employee.findAll({
-          where: { isLocked: true },
-          attributes: ['id', 'name', 'account'],
-          raw: true,
-          nest: true
-        })
-        message = 'Get locked users successfully'
-        return res.json({ message, employees })
     }
   } catch (err) { next(err) }
 }

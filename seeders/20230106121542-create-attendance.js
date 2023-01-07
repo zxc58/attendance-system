@@ -20,8 +20,8 @@ module.exports = {
         attendances.push({
           employee_id: e.employeeId,
           date_id: d.dateId,
-          punch_in: moment(d.date).add(14, 'h').toDate(),
-          punch_out: moment(d.date).add(22, 'h').toDate()
+          punch_in: moment(d.date).add(16, 'h').toDate(),
+          punch_out: moment(d.date).add(24, 'h').toDate()
         })
       })
     })

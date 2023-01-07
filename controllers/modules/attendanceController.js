@@ -1,8 +1,7 @@
 // Requirements
 const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
-const { Attendance, Employee, Department, sequelize, Sequelize } = require('../../models')
-const { or, lt } = Sequelize.Op
+const { Attendance } = require('../../models')
 exports.getQrcode = async (req, res, next) => {
   try {
     const punchQrId = await redisClient.get('punchQrId')
@@ -64,67 +63,4 @@ exports.punchOut = async (req, res, next) => {
     const message = 'Punch out successfully'
     return res.json({ message, attendance: newAttendance.toJSON() })
   } catch (error) { next(error) }
-}
-exports.unworking = async (req, res, next) => {
-  try {
-    const todayJSON = await redisClient.get('today')
-    const dateId = JSON.parse(todayJSON).id
-    const employees = await Employee.findAll({
-      where: {
-        '$Attendances.id$': null
-      },
-      include: [{
-        model: Attendance,
-        required: false,
-        where: {
-          dateId
-        },
-        attributes: []
-      }, {
-        model: Department, attributes: []
-      }],
-      attributes: ['id', 'name', 'phone', [sequelize.col('Department.name'), 'departmentName']],
-      raw: true,
-      nest: true
-    })
-    const message = 'Get unworking employees successfully'
-    return res.json({ message, employees })
-  } catch (err) { next(err) }
-}
-exports.getAttendances = async (req, res, next) => {
-  try {
-    const { status } = req.query
-    let attendances, message
-    switch (status) {
-      case 'error_attendances':
-        attendances = await Attendance.findAll({
-          attributes:
-           ['id', 'employeeId', 'dateId', 'punchIn', 'punchOut',
-             [sequelize.fn(
-               'TIMESTAMPDIFF',
-               sequelize.literal('HOUR'),
-               sequelize.literal('punch_in'),
-               sequelize.literal('punch_out')
-             ), 'diff']
-           ],
-          having: {
-            [or]: [
-              {
-                diff: {
-                  [lt]: 8
-                }
-              },
-              { punchOut: null }
-            ]
-          },
-          raw: true,
-          nest: true
-        })
-        message = 'Get error attendances successfully'
-        return res.json({ message, attendances })
-      default:
-        message = 'please use "state" query parameters'
-        return res.status(httpStatus.NOT_FOUND).json({ message })
-    }
-  } catch (err) { next(err) }
 }
