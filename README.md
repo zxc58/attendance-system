@@ -25,7 +25,8 @@ $ cat .env
 $ npm install
 ```
 ### 建立資料庫與種子資料
-請先確定連線url，本專案開發時使用MySQL並具有預設url，也可使用自己的資料庫
+請先確定連線url，本專案開發時使用MySQL並具有預設url，也可使用自己的資料庫,erd圖
+https://github.com/zxc58/attendance-system/blob/main/public/ERD.png
 #### 建立資料庫架構
 ```
 $ npx sequelize db:migrate --url <YOUR_DATABASE_URL>

@@ -149,7 +149,7 @@
         "responses": {}
       }
     },
-    "/admin/unworking": {
+    "/admin/employees/unworking": {
       "get": {
         "tags": [
           "Admin"
@@ -159,7 +159,7 @@
         "responses": {}
       }
     },
-    "/admin/locked": {
+    "/admin/employees/locked": {
       "get": {
         "tags": [
           "Admin"
@@ -169,17 +169,24 @@
         "responses": {}
       }
     },
-    "/admin/unlock": {
+    "/admin/employees/{id}/unlock": {
       "patch": {
         "tags": [
           "Admin"
         ],
         "description": "Unlock an account",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },
-    "/admin/absenteeism": {
+    "/admin/employees/absenteeism": {
       "get": {
         "tags": [
           "Admin"
