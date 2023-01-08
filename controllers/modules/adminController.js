@@ -3,6 +3,7 @@ const redisClient = require('../../config/redis')
 const { momentTW } = require('../../helpers/timeHelper')
 const { Employee, Attendance, Department, Calendar, sequelize, Sequelize } = require('../../models')
 const { or, lt, ne } = Sequelize.Op
+const defaultPassword = process.env.DEFAULT_PASSWORD
 exports.getUnworking = async (req, res, next) => {
   try {
     const todayJSON = await redisClient.get('today')
@@ -22,6 +23,7 @@ exports.getUnworking = async (req, res, next) => {
         model: Department, attributes: []
       }],
       attributes: ['id', 'name', 'phone', [sequelize.col('Department.name'), 'departmentName']],
+
       raw: true,
       nest: true
     })
@@ -50,6 +52,7 @@ exports.unlockAccount = async (req, res, next) => {
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     employee.isLocked = false
+    employee.password = defaultPassword
     const newEmployee = await employee.save()
     const message = 'update password successfully'
     return res.json({ message, employee: newEmployee.toJSON() })
