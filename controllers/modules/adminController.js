@@ -1,3 +1,4 @@
+const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
 const { momentTW } = require('../../helpers/timeHelper')
 const { Employee, Attendance, Department, Calendar, sequelize, Sequelize } = require('../../models')
@@ -42,8 +43,12 @@ exports.getLocked = async (req, res, next) => {
 }
 exports.unlockAccount = async (req, res, next) => {
   try {
-    const { id } = req.body
+    const { id } = req.params
     const employee = await Employee.findByPk(id)
+    if (!employee) {
+      const message = `Do not found employee ${id}`
+      return res.status(httpStatus.NOT_FOUND).json({ message })
+    }
     employee.isLocked = false
     const newEmployee = await employee.save()
     const message = 'update password successfully'
@@ -100,6 +105,10 @@ exports.modifyAttendance = async (req, res, next) => {
   try {
     const { id } = req.params
     const attendance = await Attendance.findByPk(id, { include: { model: Calendar } })
+    if (!attendance) {
+      const message = `Do not found attendance ${id} `
+      return res.status(httpStatus.NOT_FOUND).json({ message })
+    }
     const date = attendance.Calendar.date
     const newPunchIn = momentTW(date).add(8, 'h').toDate()
     const newPunchOut = momentTW(date).add(16, 'h').toDate()

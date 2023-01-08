@@ -1,6 +1,5 @@
 const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const { Op } = Sequelize
-const bcryptjs = require('bcryptjs')
 const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
 
@@ -8,6 +7,10 @@ exports.getEmployee = async (req, res, next) => {
   try {
     const { id } = req.params
     const employee = await Employee.findByPk(id, { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } })
+    if (!employee) {
+      const message = `Do not found employee ${id}`
+      return res.status(httpStatus.NOT_FOUND).json({ message })
+    }
     const message = 'Get employee data successfully'
     return res.json({ message, employee: employee.toJSON() })
   } catch (error) { next(error) }
@@ -21,6 +24,10 @@ exports.patchEmployee = async (req, res, next) => {
     if (phone) { newData.phone = phone }
     if (email) { newData.email = email }
     const employee = await Employee.findByPk(id)
+    if (!employee) {
+      const message = `Do not found employee ${id}`
+      return res.status(httpStatus.NOT_FOUND).json({ message })
+    }
     employee.set(newData)
     const newEmployee = await employee.save()
     const message = 'update password successfully'
@@ -71,6 +78,9 @@ exports.getPersonalAttendances = async (req, res, next) => {
       })
       const message = 'Get records success'
       return res.json({ message, attendances })
+    } else {
+      const message = 'Bad query params'
+      return res.status(httpStatus.BAD_REQUEST).json({ message })
     }
   } catch (err) { next(err) }
 }

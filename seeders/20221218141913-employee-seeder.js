@@ -7,11 +7,11 @@ module.exports = {
     const queryTypes = { type: queryInterface.sequelize.QueryTypes.SELECT }
     const [dates, departments] = await Promise.all([
       queryInterface.sequelize.query(
-        "SELECT id,date from titansoft.calendar where date='2022-10-12'"
+        "SELECT id,date from Calendar where date='2022-10-12'"
         , queryTypes
       ),
       queryInterface.sequelize.query(
-        "SELECT id,name from titansoft.departments where name='HR'"
+        "SELECT id,name from Departments where name='HR'"
         , queryTypes
       )
     ])
