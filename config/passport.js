@@ -6,6 +6,7 @@ const bcryptjs = require('bcryptjs')
 const redisClient = require('./redis')
 const { Employee } = require('../models')
 const { momentTW } = require('../helpers/timeHelper')
+const sendMail = require('../helpers/emailHelper')
 // Constants
 const jwtConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -20,6 +21,12 @@ passport.use(new LocalStrategy({ usernameField: 'account' }, async (account, pas
     if (!bcryptjs.compareSync(password, user.password)) {
       const wrongTimes = await redisClient.get(`account:${account}`)
       if (+wrongTimes === 4) {
+        const admins = await Employee.findAll({ where: { isAdmin: true }, raw: true })
+        let to = ''
+        admins.forEach(element => {
+          to += `${element.email} `
+        })
+        sendMail(to, user.toJSON())
         user.isLocked = true
         await Promise.all([user.save(), redisClient.del(`account:${account}`)])
       } else {

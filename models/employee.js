@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize')
+const bcryptjs = require('bcryptjs')
 module.exports = (sequelize, DataTypes) => {
   class Employee extends Model {
     /**
@@ -19,7 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     account: DataTypes.STRING,
-    password: DataTypes.STRING,
+    password: {
+      type: DataTypes.STRING,
+      set (value) {
+        this.setDataValue('password', bcryptjs.hashSync(value))
+      }
+    },
     phone: DataTypes.STRING,
     hireDateId: {
       type: DataTypes.INTEGER,

@@ -5,12 +5,12 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const queryTypes = { type: queryInterface.sequelize.QueryTypes.SELECT }
     const workingdays = await queryInterface.sequelize.query(
-      'SELECT id as dateId,date,is_holiday from titansoft.calendar ' +
+      'SELECT id as dateId,date,is_holiday from Calendar ' +
       "where date>='2022-10-12' AND date< CURDATE() and is_holiday=0",
       queryTypes
     )
     const employees = await queryInterface.sequelize.query(
-      'SELECT id as employeeId from titansoft.employees ' +
+      'SELECT id as employeeId from Employees ' +
       "where name in ('Titansoft','Alphacamp','Titanadmin')",
       queryTypes
     )
