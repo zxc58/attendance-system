@@ -23,8 +23,8 @@
     "swagger-autogen": "^2.22.0"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -36,12 +36,14 @@
     "moment-timezone": "^0.5.40",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
+    "nodemailer": "^6.8.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "qrcode": "^1.5.1",
     "redis": "^4.5.1",
     "sequelize": "^6.27.0",
+    "sequelize-cli": "^6.5.2",
     "swagger-ui-express": "^4.6.0",
     "uuid": "^9.0.0"
   }

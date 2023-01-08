@@ -58,6 +58,10 @@ exports.punchOut = async (req, res, next) => {
     const { attendanceId } = req.params
     const { punchOut } = req.body
     const attendance = await Attendance.findByPk(attendanceId)
+    if (!attendance) {
+      const message = `Do not found attendance ${attendanceId}`
+      return res.status(httpStatus.NOT_FOUND).json({ message })
+    }
     attendance.punchOut = punchOut
     const newAttendance = await attendance.save()
     const message = 'Punch out successfully'

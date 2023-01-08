@@ -2,25 +2,25 @@ const { Router } = require('express')
 const router = Router()
 const { adminController } = require('../../controllers')
 router.get(
-  '/unworking',
+  '/employees/unworking',
   adminController.getUnworking
   // #swagger.tags = ['Admin']
   // #swagger.description = 'Get unwork employees'
 )
 router.get(
-  '/locked',
+  '/employees/locked',
   adminController.getLocked
   // #swagger.tags = ['Admin']
   // #swagger.description = 'Get locked accounts'
 )
 router.patch(
-  '/unlock',
+  '/employees/:id/unlock',
   adminController.unlockAccount
   // #swagger.tags = ['Admin']
   // #swagger.description = 'Unlock an account'
 )
 router.get(
-  '/absenteeism',
+  '/employees/absenteeism',
   adminController.getAbsenteeism
   // #swagger.tags = ['Admin']
   // #swagger.description = 'get absenteeism employees'

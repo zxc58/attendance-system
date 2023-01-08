@@ -7,15 +7,22 @@ const companyPosition = {
 }
 const distanceLimit = Number(process.env.DISTANCE_LIMIT ?? 400)
 const httpStatus = require('http-status')
-exports.validateAccount = body('account').isLength({ min: 7, max: 14 }).isAlphanumeric()
-exports.validatePassword = body('password').isLength({ min: 7, max: 14 }).isAlphanumeric()
-exports.validatePunchIn = body('punchIn').isISO8601()
-exports.validatePunchOut = body('punchOut').isISO8601()
-exports.validateQueryDate = query('date').custom(value => {
-  if (['today'].includes(value)) { return true }
-  throw new Error('Query date is invalid ')
+
+exports.bodyAccount = body('account').isLength({ min: 5, max: 14 }).isAlphanumeric()
+exports.bodyPassword = body('password').custom(value => {
+  if (!value) { return true }
+  const isValid = /[A-Za-z0-9]{7,14}/.test(value)
+  if (isValid) { return true }
+  return Promise.reject(new Error('password is invalid'))
 })
-exports.validateLocation = [
+exports.bodyEmail = body('email').isEmail()
+exports.bodyPunchIn = body('punchIn').isISO8601()
+exports.bodyPunchOut = body('punchOut').isISO8601()
+exports.queryDate = query('date').custom(value => {
+  if (['today', 'recent'].includes(value)) { return true }
+  return Promise.reject(new Error('Query date is invalid '))
+})
+exports.queryLocation = [
   query('location.latitude').toFloat(),
   query('location.longitude').toFloat(),
   query('location.accuracy').toFloat(),
@@ -30,8 +37,7 @@ exports.validateLocation = [
 exports.validationCallback = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    const message = 'express-validator error'
-    return res.status(httpStatus.BAD_REQUEST).json({ message, errors: errors.array() })
+    return res.status(httpStatus.BAD_REQUEST).json({ message: errors.array() })
   }
   return next()
 }

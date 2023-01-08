@@ -14,14 +14,16 @@ router.post(
 )
 router.post(
   '/refresh',
-  async (req, res) => {
-    const { refreshToken } = req.body
-    if (!refreshToken) { return res.status(httpStatus.BAD_REQUEST).json({ message: 'No refresh token' }) }
-    const refreshTokenPayload = jwt.verify(refreshToken, refreshTokenSecret)
-    if (!refreshTokenPayload) { return res.status(httpStatus.BAD_REQUEST).json({ message: 'Refresh token is expired' }) }
-    const { userId: id } = refreshTokenPayload
-    const employee = await Employee.findByPk(id, { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } })
-    signJWT({ res, user: employee, getRefreshToken: false })
+  async (req, res, next) => {
+    try {
+      const { refreshToken } = req.body
+      if (!refreshToken) { return res.status(httpStatus.BAD_REQUEST).json({ message: 'No refresh token' }) }
+      const refreshTokenPayload = jwt.verify(refreshToken, refreshTokenSecret)
+      if (!refreshTokenPayload) { return res.status(httpStatus.BAD_REQUEST).json({ message: 'Refresh token is expired' }) }
+      const { userId: id } = refreshTokenPayload
+      const employee = await Employee.findByPk(id, { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } })
+      signJWT({ res, user: employee, getRefreshToken: false })
+    } catch (err) { next(err) }
   }
   // #swagger.tags = ['Auth']
   // #swagger.description = 'Api for refresh access token'
