@@ -2,6 +2,17 @@ const { Router } = require('express')
 const { employeeController, attendanceController } = require('../../controllers')
 const router = Router()
 const { validator: { bodyPassword, bodyPunchIn, bodyPunchOut, bodyEmail, queryLocation, queryDate, validationCallback } } = require('../../middlewares')
+//
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
+
+router.post(
+  '/:id/avatar',
+  upload.single('image'),
+  employeeController.updateAvatar
+)
+//
 router.get(
   '/:id',
   employeeController.getEmployee
