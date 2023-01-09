@@ -2,7 +2,32 @@ const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const { Op } = Sequelize
 const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
+const AWS = require('aws-sdk')
+const s3 = new AWS.S3({
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.SECRET_KEY_ID
+})
 
+exports.updateAvatar = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const params = {
+      Bucket: 'titaner/user-image',
+      Key: 'avatar-' + id,
+      Body: req.file.buffer,
+      ACL: 'public-read',
+      ContentType: req.file.mimetype
+    }
+    s3.upload(params, async function (err, data) {
+      if (err) { return res.json({ message: 'update avatar fail' }) }
+      console.log('Bucket Created Successfully', data.Location)
+      const employee = await Employee.findByPk(id)
+      employee.avatar = data.Location
+      const newEmployee = await employee.save()
+      return res.json({ message: 'successfully', avatar: data.Location })
+    })
+  } catch (err) { next(err) }
+}
 exports.getEmployee = async (req, res, next) => {
   try {
     const { id } = req.params
