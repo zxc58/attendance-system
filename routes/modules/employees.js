@@ -11,6 +11,8 @@ router.post(
   '/:id/avatar',
   upload.single('image'),
   employeeController.updateAvatar
+  // #swagger.tags = ['Employee']
+  // #swagger.description = 'update personal avatar'
 )
 //
 router.get(

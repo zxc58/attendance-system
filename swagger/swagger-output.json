@@ -62,6 +62,23 @@
         "responses": {}
       }
     },
+    "/employees/{id}/avatar": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "update personal avatar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
     "/employees/{id}": {
       "get": {
         "tags": [
