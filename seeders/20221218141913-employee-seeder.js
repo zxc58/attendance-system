@@ -22,14 +22,18 @@ module.exports = {
         account: 'titansoft',
         password: bcryptjs.hashSync('titaner'),
         hire_date_id,
-        is_admin: false
+        is_admin: false,
+        phone: '0987654321',
+        email: 'titansoft@example.com'
       },
       {
         name: 'Alphacamp',
         account: 'alphacamp',
         password: bcryptjs.hashSync('titaner'),
         hire_date_id,
-        is_admin: false
+        is_admin: false,
+        phone: '0912345678',
+        email: 'alphacamp@example.com'
       },
       {
         name: 'Titanadmin',
@@ -37,7 +41,9 @@ module.exports = {
         password: bcryptjs.hashSync('tiadmin'),
         hire_date_id,
         is_admin: true,
-        department_id
+        department_id,
+        phone: '0999999999',
+        email: 'admin@example.com'
       }
     ]
     await queryInterface.bulkInsert('Employees', employees)

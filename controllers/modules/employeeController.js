@@ -3,6 +3,9 @@ const { Op } = Sequelize
 const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
 const AWS = require('aws-sdk')
+const short = require('short-uuid')
+
+short.generate()
 const s3 = new AWS.S3({
   accessKeyId: process.env.ACCESS_KEY_ID,
   secretAccessKey: process.env.SECRET_KEY_ID
@@ -13,7 +16,7 @@ exports.updateAvatar = async (req, res, next) => {
     const { id } = req.params
     const params = {
       Bucket: 'titaner/user-image',
-      Key: 'avatar-' + id,
+      Key: short.generate(),
       Body: req.file.buffer,
       ACL: 'public-read',
       ContentType: req.file.mimetype

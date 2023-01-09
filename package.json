@@ -1,6 +1,6 @@
 {
   "name": "attendance-system",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -49,6 +49,7 @@
     "require": "^2.4.20",
     "sequelize": "^6.27.0",
     "sequelize-cli": "^6.5.2",
+    "short-uuid": "^4.2.2",
     "swagger-ui-express": "^4.6.0",
     "uuid": "^9.0.0"
   }
