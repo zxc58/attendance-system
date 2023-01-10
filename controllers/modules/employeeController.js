@@ -1,33 +1,44 @@
-const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
-const { Op } = Sequelize
-const redisClient = require('../../config/redis')
 const httpStatus = require('http-status')
 const AWS = require('aws-sdk')
 const short = require('short-uuid')
+const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
+const redisClient = require('../../config/redis')
+const { Op } = Sequelize
 
-short.generate()
-const s3 = new AWS.S3({
-  accessKeyId: process.env.ACCESS_KEY_ID,
-  secretAccessKey: process.env.SECRET_KEY_ID
-})
+const accessKeyId = process.env.AWS_IAM_ACCESS_KEY_ID
+const secretAccessKey = process.env.AWS_IAM_SECRET_ACCESS_KEY
+const s3 = new AWS.S3({ accessKeyId, secretAccessKey })
 
 exports.updateAvatar = async (req, res, next) => {
   try {
     const { id } = req.params
+    const employee = await Employee.findByPk(id, {
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
+    })
+    if (!employee) {
+      const message = 'Do not found resource of this id'
+      return res.status(httpStatus.BAD_REQUEST).json({ message })
+    }
     const params = {
-      Bucket: 'titaner/user-image',
+      Bucket: process.env.AWS_S3_BUCKET,
       Key: short.generate(),
       Body: req.file.buffer,
       ACL: 'public-read',
       ContentType: req.file.mimetype
     }
     s3.upload(params, async function (err, data) {
-      if (err) { return res.json({ message: 'update avatar fail' }) }
-      console.log('Bucket Created Successfully', data.Location)
-      const employee = await Employee.findByPk(id)
-      employee.avatar = data.Location
-      const newEmployee = await employee.save()
-      return res.json({ message: 'successfully', avatar: data.Location })
+      try {
+        if (err) {
+          const message = 'update avatar fail'
+          return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
+        }
+        employee.avatar = data.Location
+        await employee.save()
+        return res.json({ message: 'successfully', avatar: data.Location })
+      } catch (err) {
+        const message = 'Update avatar fail'
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
+      }
     })
   } catch (err) { next(err) }
 }
