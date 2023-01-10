@@ -67,7 +67,7 @@
         "tags": [
           "Employee"
         ],
-        "description": "update personal avatar",
+        "description": "Update personal avatar",
         "parameters": [
           {
             "name": "id",
@@ -208,7 +208,7 @@
         "tags": [
           "Admin"
         ],
-        "description": "get absenteeism employees",
+        "description": "Get absenteeism employees",
         "parameters": [],
         "responses": {}
       }
@@ -218,7 +218,7 @@
         "tags": [
           "Admin"
         ],
-        "description": "modify Attendance ",
+        "description": "Modify Attendance ",
         "parameters": [
           {
             "name": "id",

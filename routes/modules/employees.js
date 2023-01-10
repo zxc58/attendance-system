@@ -12,7 +12,7 @@ router.post(
   upload.single('image'),
   employeeController.updateAvatar
   // #swagger.tags = ['Employee']
-  // #swagger.description = 'update personal avatar'
+  // #swagger.description = 'Update personal avatar'
 )
 //
 router.get(

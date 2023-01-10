@@ -23,12 +23,12 @@ router.get(
   '/employees/absenteeism',
   adminController.getAbsenteeism
   // #swagger.tags = ['Admin']
-  // #swagger.description = 'get absenteeism employees'
+  // #swagger.description = 'Get absenteeism employees'
 )
 router.patch(
   '/attendances/:id',
   adminController.modifyAttendance
   // #swagger.tags = ['Admin']
-  // #swagger.description = 'modify Attendance '
+  // #swagger.description = 'Modify Attendance '
 )
 module.exports = router
