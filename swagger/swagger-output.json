@@ -27,20 +27,7 @@
           "Auth"
         ],
         "description": "Api for refresh access token",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "refreshToken": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {}
       }
     },
@@ -260,11 +247,11 @@
         },
         "punchIn": {
           "type": "string",
-          "example": "2023-01-16T18:08:10.513Z"
+          "example": "2023-01-16T18:52:16.015Z"
         },
         "punchOut": {
           "type": "string",
-          "example": "2023-01-16T18:08:10.513Z"
+          "example": "2023-01-16T18:52:16.015Z"
         },
         "employeeId": {
           "type": "number",
@@ -285,11 +272,11 @@
         },
         "punchIn": {
           "type": "string",
-          "example": "2023-01-16T18:08:10.513Z"
+          "example": "2023-01-16T18:52:16.015Z"
         },
         "punchOut": {
           "type": "string",
-          "example": "2023-01-16T18:08:10.513Z"
+          "example": "2023-01-16T18:52:16.015Z"
         },
         "employeeId": {
           "type": "number",
