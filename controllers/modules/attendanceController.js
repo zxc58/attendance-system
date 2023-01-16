@@ -48,9 +48,12 @@ exports.punchIn = async (req, res, next) => {
     const todayJSON = await redisClient.get('today')
     const today = JSON.parse(todayJSON)
     const dateId = today.id
-    const attendance = await Attendance.create({ dateId, employeeId, punchIn })
+    const attendance = await Attendance.create(
+      { dateId, employeeId, punchIn },
+      { attributes: { exclude: ['createdAt', 'updatedAt'] } }
+    )
     const message = 'Punch in successfully'
-    return res.json({ message, attendance: attendance.toJSON() })
+    return res.json({ message, data: attendance.toJSON() })
   } catch (error) { next(error) }
 }
 exports.punchOut = async (req, res, next) => {
@@ -65,6 +68,6 @@ exports.punchOut = async (req, res, next) => {
     attendance.punchOut = punchOut
     const newAttendance = await attendance.save()
     const message = 'Punch out successfully'
-    return res.json({ message, attendance: newAttendance.toJSON() })
+    return res.json({ message, data: newAttendance.toJSON() })
   } catch (error) { next(error) }
 }

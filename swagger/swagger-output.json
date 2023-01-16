@@ -140,7 +140,26 @@
             "type": "string"
           }
         ],
-        "responses": {}
+        "responses": {
+          "200": {
+            "description": "Punch in successfully and return record",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Punch in successfully"
+                },
+                "data": {
+                  "$ref": "#/definitions/punch_in"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
       }
     },
     "/employees/{employeeId}/attendances/{attendanceId}": {
@@ -148,7 +167,7 @@
         "tags": [
           "Attendance"
         ],
-        "description": "Api for employee punch out",
+        "description": "hahahaApi for employee punch out",
         "parameters": [
           {
             "name": "employeeId",
@@ -228,6 +247,58 @@
           }
         ],
         "responses": {}
+      }
+    }
+  },
+  "definitions": {
+    "punch_out": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "punchIn": {
+          "type": "string",
+          "example": "2023-01-16T18:08:10.513Z"
+        },
+        "punchOut": {
+          "type": "string",
+          "example": "2023-01-16T18:08:10.513Z"
+        },
+        "employeeId": {
+          "type": "number",
+          "example": 1
+        },
+        "dateId": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "punch_in": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "punchIn": {
+          "type": "string",
+          "example": "2023-01-16T18:08:10.513Z"
+        },
+        "punchOut": {
+          "type": "string",
+          "example": "2023-01-16T18:08:10.513Z"
+        },
+        "employeeId": {
+          "type": "number",
+          "example": 1
+        },
+        "dateId": {
+          "type": "number",
+          "example": 1
+        }
       }
     }
   }

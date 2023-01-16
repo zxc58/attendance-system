@@ -4,7 +4,7 @@ const { momentTW } = require('../../helpers/timeHelper')
 const { Employee, Attendance, Department, Calendar, sequelize, Sequelize } = require('../../models')
 const { or, lt, ne } = Sequelize.Op
 const defaultPassword = process.env.DEFAULT_PASSWORD
-exports.getUnworking = async (req, res, next) => {
+exports.getUnworking = async function (req, res, next) {
   try {
     const todayJSON = await redisClient.get('today')
     const dateId = JSON.parse(todayJSON).id
@@ -28,7 +28,7 @@ exports.getUnworking = async (req, res, next) => {
       nest: true
     })
     const message = 'Get unworking employees successfully'
-    return res.json({ message, employees })
+    return res.json({ message, data: employees })
   } catch (err) { next(err) }
 }
 exports.getLocked = async (req, res, next) => {
@@ -40,10 +40,10 @@ exports.getLocked = async (req, res, next) => {
       nest: true
     })
     const message = 'Get locked users successfully'
-    return res.json({ message, employees })
+    return res.json({ message, data: employees })
   } catch (err) { next(err) }
 }
-exports.unlockAccount = async (req, res, next) => {
+exports.unlockAccount = async function (req, res, next) {
   try {
     const { id } = req.params
     const employee = await Employee.findByPk(id)
@@ -55,7 +55,7 @@ exports.unlockAccount = async (req, res, next) => {
     employee.password = defaultPassword
     const newEmployee = await employee.save()
     const message = 'update password successfully'
-    return res.json({ message, employee: newEmployee.toJSON() })
+    return res.json({ message, data: newEmployee.toJSON() })
   } catch (error) { next(error) }
 }
 exports.getAbsenteeism = async (req, res, next) => {
@@ -101,10 +101,10 @@ exports.getAbsenteeism = async (req, res, next) => {
       nest: true
     })
     const message = 'Get error attendances successfully'
-    return res.json({ message, attendances })
+    return res.json({ message, data: attendances })
   } catch (err) { next(err) }
 }
-exports.modifyAttendance = async (req, res, next) => {
+exports.modifyAttendance = async function (req, res, next) {
   try {
     const { id } = req.params
     const attendance = await Attendance.findByPk(id, { include: { model: Calendar } })
@@ -117,7 +117,7 @@ exports.modifyAttendance = async (req, res, next) => {
     const newPunchOut = momentTW(date).add(16, 'h').toDate()
     attendance.punchIn = newPunchIn
     attendance.punchOut = newPunchOut
-    const newAttendance = await attendance.save()
+    await attendance.save()
     const message = 'Modify attendance successfully'
     return res.json({ message })
   } catch (err) { next(err) }
