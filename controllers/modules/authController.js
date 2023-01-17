@@ -7,16 +7,22 @@ const { signJWT } = require('../../helpers/jwtHelper')
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
 
 exports.localAuthenticate = async function (req, res, next) {
-  passport.authenticate('local', { session: false }, async (err, user, info) => {
-    if (err) { return next(err) }
-    if (info && !user) {
-      return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
+  passport.authenticate(
+    'local',
+    { session: false },
+    async (err, user, info) => {
+      if (err) {
+        return next(err)
+      }
+      if (info && !user) {
+        return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
+      }
+      if (user) {
+        delete user.password
+        return signJWT(res, user, true)
+      }
     }
-    if (user) {
-      delete user.password
-      return signJWT(res, user, true)
-    }
-  })(req, res, next)
+  )(req, res, next)
 }
 
 exports.refreshToken = async function (req, res, next) {
@@ -32,10 +38,11 @@ exports.refreshToken = async function (req, res, next) {
       return res.status(httpStatus.BAD_REQUEST).json({ message })
     }
     const { userId } = refreshTokenPayload
-    const employee = await Employee.findByPk(
-      userId,
-      { attributes: { exclude: ['password', 'createdAt', 'updatedAt'] } }
-    )
+    const employee = await Employee.findByPk(userId, {
+      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+    })
     signJWT(res, employee.toJSON(), false)
-  } catch (err) { next(err) }
+  } catch (err) {
+    next(err)
+  }
 }

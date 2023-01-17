@@ -1,7 +1,20 @@
 const { Router } = require('express')
-const { employeeController, attendanceController } = require('../../controllers')
+const {
+  employeeController,
+  attendanceController,
+} = require('../../controllers')
 const router = Router()
-const { validator: { bodyPassword, bodyPunchIn, bodyPunchOut, bodyEmail, queryLocation, queryDate, validationCallback } } = require('../../middlewares')
+const {
+  validator: {
+    bodyPassword,
+    bodyPunchIn,
+    bodyPunchOut,
+    bodyEmail,
+    queryLocation,
+    queryDate,
+    validationCallback,
+  },
+} = require('../../middlewares')
 //
 const multer = require('multer')
 const storage = multer.memoryStorage()
@@ -56,7 +69,6 @@ router.patch(
   /*  #swagger.tags = ['Attendance']
       #swagger.description = 'hahahaApi for employee punch out'
   */
-
 )
 
 module.exports = router

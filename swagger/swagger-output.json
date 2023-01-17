@@ -7,15 +7,11 @@
   },
   "host": "localhost:3000",
   "basePath": "/",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Api for sign in",
         "parameters": [],
         "responses": {}
@@ -23,9 +19,7 @@
     },
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "description": "Api for refresh access token",
         "parameters": [],
         "responses": {}
@@ -33,17 +27,13 @@
     },
     "/attendances/qrcode": {
       "get": {
-        "tags": [
-          "QR"
-        ],
+        "tags": ["QR"],
         "description": "Get qrcode value",
         "parameters": [],
         "responses": {}
       },
       "post": {
-        "tags": [
-          "QR"
-        ],
+        "tags": ["QR"],
         "description": "Api for qr punch",
         "parameters": [],
         "responses": {}
@@ -51,9 +41,7 @@
     },
     "/employees/{id}/avatar": {
       "post": {
-        "tags": [
-          "Employee"
-        ],
+        "tags": ["Employee"],
         "description": "Update personal avatar",
         "parameters": [
           {
@@ -68,9 +56,7 @@
     },
     "/employees/{id}": {
       "get": {
-        "tags": [
-          "Employee"
-        ],
+        "tags": ["Employee"],
         "description": "Get personal data",
         "parameters": [
           {
@@ -83,9 +69,7 @@
         "responses": {}
       },
       "patch": {
-        "tags": [
-          "Employee"
-        ],
+        "tags": ["Employee"],
         "description": "Update personal data",
         "parameters": [
           {
@@ -100,9 +84,7 @@
     },
     "/employees/{id}/attendances": {
       "get": {
-        "tags": [
-          "Attendance"
-        ],
+        "tags": ["Attendance"],
         "description": "Get personal attendances",
         "parameters": [
           {
@@ -115,9 +97,7 @@
         "responses": {}
       },
       "post": {
-        "tags": [
-          "Attendance"
-        ],
+        "tags": ["Attendance"],
         "description": "Api for employee punch in",
         "parameters": [
           {
@@ -151,9 +131,7 @@
     },
     "/employees/{employeeId}/attendances/{attendanceId}": {
       "patch": {
-        "tags": [
-          "Attendance"
-        ],
+        "tags": ["Attendance"],
         "description": "hahahaApi for employee punch out",
         "parameters": [
           {
@@ -174,9 +152,7 @@
     },
     "/admin/employees/unworking": {
       "get": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "description": "Get unwork employees",
         "parameters": [],
         "responses": {}
@@ -184,9 +160,7 @@
     },
     "/admin/employees/locked": {
       "get": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "description": "Get locked accounts",
         "parameters": [],
         "responses": {}
@@ -194,9 +168,7 @@
     },
     "/admin/employees/{id}/unlock": {
       "patch": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "description": "Unlock an account",
         "parameters": [
           {
@@ -211,9 +183,7 @@
     },
     "/admin/employees/absenteeism": {
       "get": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "description": "Get absenteeism employees",
         "parameters": [],
         "responses": {}
@@ -221,9 +191,7 @@
     },
     "/admin/attendances/{id}": {
       "patch": {
-        "tags": [
-          "Admin"
-        ],
+        "tags": ["Admin"],
         "description": "Modify Attendance ",
         "parameters": [
           {
@@ -247,11 +215,11 @@
         },
         "punchIn": {
           "type": "string",
-          "example": "2023-01-16T18:52:16.015Z"
+          "example": "2023-01-17T09:51:08.093Z"
         },
         "punchOut": {
           "type": "string",
-          "example": "2023-01-16T18:52:16.015Z"
+          "example": "2023-01-17T09:51:08.093Z"
         },
         "employeeId": {
           "type": "number",
@@ -272,11 +240,11 @@
         },
         "punchIn": {
           "type": "string",
-          "example": "2023-01-16T18:52:16.015Z"
+          "example": "2023-01-17T09:51:08.093Z"
         },
         "punchOut": {
           "type": "string",
-          "example": "2023-01-16T18:52:16.015Z"
+          "example": "2023-01-17T09:51:08.093Z"
         },
         "employeeId": {
           "type": "number",

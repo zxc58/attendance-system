@@ -16,6 +16,6 @@
   },
   "production": {
     "use_env_variable": "DB_CONNECT_STRING",
-    "logging":false
+    "logging": false
   }
 }

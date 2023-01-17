@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "initDB": "sequelize db:migrate && sequelize db:seed:all",
     "swagger": "node swagger/swagger-autogen.js",
-    "lint": "eslint  \"**/*.js\" --fix",
+    "lint": "npx eslint . --ext .js --fix",
+    "format": "npx prettier . --write",
     "prepare": "husky install"
   },
   "keywords": [],

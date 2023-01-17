@@ -6,7 +6,9 @@ exports.getQrcode = async (req, res, next) => {
   try {
     const punchQrId = await redisClient.get('punchQrId')
     return res.json({ message: 'get qr successfully', punchQrId })
-  } catch (err) { next(err) }
+  } catch (err) {
+    next(err)
+  }
 }
 exports.qrPunch = async (req, res, next) => {
   try {
@@ -14,7 +16,7 @@ exports.qrPunch = async (req, res, next) => {
     const { punchQrId, punch } = req.body
     const [checkUuid, todayJSON] = await Promise.all([
       redisClient.get('punchQrId'),
-      redisClient.get('today')
+      redisClient.get('today'),
     ])
     if (!(checkUuid === punchQrId)) {
       const message = 'Id is expired'
@@ -24,8 +26,8 @@ exports.qrPunch = async (req, res, next) => {
     const attendance = await Attendance.findOne({
       where: {
         dateId,
-        employeeId
-      }
+        employeeId,
+      },
     })
     if (attendance) {
       attendance.punchOut = punch
@@ -34,12 +36,14 @@ exports.qrPunch = async (req, res, next) => {
       await Attendance.create({
         employeeId,
         punchIn: punch,
-        dateId
+        dateId,
       })
     }
     const message = 'QR code punch successfully'
     return res.json({ message })
-  } catch (err) { next(err) }
+  } catch (err) {
+    next(err)
+  }
 }
 exports.punchIn = async (req, res, next) => {
   try {
@@ -54,7 +58,9 @@ exports.punchIn = async (req, res, next) => {
     )
     const message = 'Punch in successfully'
     return res.json({ message, data: attendance.toJSON() })
-  } catch (error) { next(error) }
+  } catch (error) {
+    next(error)
+  }
 }
 exports.punchOut = async (req, res, next) => {
   try {
@@ -69,5 +75,7 @@ exports.punchOut = async (req, res, next) => {
     const newAttendance = await attendance.save()
     const message = 'Punch out successfully'
     return res.json({ message, data: newAttendance.toJSON() })
-  } catch (error) { next(error) }
+  } catch (error) {
+    next(error)
+  }
 }

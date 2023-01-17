@@ -1,23 +1,24 @@
 'use strict'
-const {
-  Model
-} = require('sequelize')
+const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Calendar extends Model {
-    static associate (models) {
+    static associate(models) {
       Calendar.hasMany(models.Attendance, { foreignKey: 'dateId' })
       Calendar.hasMany(models.Employee, { foreignKey: 'hireDateId' })
     }
   }
-  Calendar.init({
-    date: DataTypes.DATEONLY,
-    day: DataTypes.STRING,
-    isHoliday: DataTypes.BOOLEAN
-  }, {
-    sequelize,
-    modelName: 'Calendar',
-    tableName: 'Calendar',
-    underscored: true
-  })
+  Calendar.init(
+    {
+      date: DataTypes.DATEONLY,
+      day: DataTypes.STRING,
+      isHoliday: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: 'Calendar',
+      tableName: 'Calendar',
+      underscored: true,
+    }
+  )
   return Calendar
 }

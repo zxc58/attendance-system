@@ -1,6 +1,9 @@
 const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
-const { authenticator: { jwtAuth }, validator: { queryLocation, validationCallback } } = require('../../middlewares')
+const {
+  authenticator: { jwtAuth },
+  validator: { queryLocation, validationCallback },
+} = require('../../middlewares')
 const router = Router()
 
 router.get(
