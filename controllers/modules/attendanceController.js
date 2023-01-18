@@ -1,8 +1,8 @@
-// Requirements
 const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
 const { Attendance } = require('../../models')
-exports.getQrcode = async (req, res, next) => {
+
+exports.getQrcode = async function (req, res, next) {
   try {
     const punchQrId = await redisClient.get('punchQrId')
     return res.json({ message: 'get qr successfully', punchQrId })
@@ -10,7 +10,8 @@ exports.getQrcode = async (req, res, next) => {
     next(err)
   }
 }
-exports.qrPunch = async (req, res, next) => {
+
+exports.qrPunch = async function (req, res, next) {
   try {
     const employeeId = req.user.id
     const { punchQrId, punch } = req.body
@@ -45,7 +46,8 @@ exports.qrPunch = async (req, res, next) => {
     next(err)
   }
 }
-exports.punchIn = async (req, res, next) => {
+
+exports.punchIn = async function (req, res, next) {
   try {
     const { id: employeeId } = req.params
     const { punchIn } = req.body
@@ -62,7 +64,8 @@ exports.punchIn = async (req, res, next) => {
     next(error)
   }
 }
-exports.punchOut = async (req, res, next) => {
+
+exports.punchOut = async function (req, res, next) {
   try {
     const { attendanceId } = req.params
     const { punchOut } = req.body

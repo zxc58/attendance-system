@@ -1,5 +1,4 @@
 const passport = require('../../config/passport')
-const { signJWT } = require('../../helpers/jwtHelper')
 const httpStatus = require('http-status')
 const authenticator = {
   jwtAuth: (req, res, next) => {

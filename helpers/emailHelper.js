@@ -16,7 +16,7 @@ const sendMail = (to, user) => {
         user.account
       } 已經被鎖定</h1><h2>時間: ${new Date().toISOString()}</h2>`,
     })
-    .then((cb) => console.info('success send email'))
+    .then(() => console.info('success send email'))
     .catch((err) => console.error(err))
 }
 module.exports = sendMail

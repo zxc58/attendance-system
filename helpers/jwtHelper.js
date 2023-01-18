@@ -1,7 +1,9 @@
+// @ts-check
 const jwt = require('jsonwebtoken')
-const { momentTW } = require('./timeHelper')
-const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
+const accessTokenSecret =
+  process.env.ACCESS_TOKEN_SECRET ?? 'ACCESS_TOKEN_SECRET'
+const refreshTokenSecret =
+  process.env.REFRESH_TOKEN_SECRET ?? 'REFRESH_TOKEN_SECRET'
 const accessTokenMaxage = Number(process.env.ACCESS_TOKEN_MAXAGE ?? 30000)
 const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
 /**

@@ -9,7 +9,7 @@ const accessKeyId = process.env.AWS_IAM_ACCESS_KEY_ID
 const secretAccessKey = process.env.AWS_IAM_SECRET_ACCESS_KEY
 const s3 = new AWS.S3({ accessKeyId, secretAccessKey })
 
-exports.updateAvatar = async (req, res, next) => {
+exports.updateAvatar = async function (req, res, next) {
   try {
     const { id } = req.params
     const employee = await Employee.findByPk(id, {
@@ -44,7 +44,8 @@ exports.updateAvatar = async (req, res, next) => {
     next(err)
   }
 }
-exports.getEmployee = async (req, res, next) => {
+
+exports.getEmployee = async function (req, res, next) {
   try {
     const { id } = req.params
     const employee = await Employee.findByPk(id, {
@@ -60,7 +61,8 @@ exports.getEmployee = async (req, res, next) => {
     next(error)
   }
 }
-exports.patchEmployee = async (req, res, next) => {
+
+exports.patchEmployee = async function (req, res, next) {
   try {
     const { id } = req.params
     const { password, phone, email } = req.body
@@ -87,7 +89,8 @@ exports.patchEmployee = async (req, res, next) => {
     next(error)
   }
 }
-exports.getPersonalAttendances = async (req, res, next) => {
+
+exports.getPersonalAttendances = async function (req, res, next) {
   try {
     const { id: employeeId } = req.params
     const { date } = req.query
@@ -101,6 +104,7 @@ exports.getPersonalAttendances = async (req, res, next) => {
           employeeId,
           dateId,
         },
+        attributes: { exclude: ['createdAt', `updatedAt`] },
       })
       if (!attendance) {
         const message = 'You have not punched in yet'

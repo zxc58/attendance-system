@@ -49,7 +49,7 @@ exports.getUnworking = async function (req, res, next) {
     next(err)
   }
 }
-exports.getLocked = async (req, res, next) => {
+exports.getLocked = async function (req, res, next) {
   try {
     const employees = await Employee.findAll({
       where: { isLocked: true },
@@ -80,7 +80,7 @@ exports.unlockAccount = async function (req, res, next) {
     next(error)
   }
 }
-exports.getAbsenteeism = async (req, res, next) => {
+exports.getAbsenteeism = async function (req, res, next) {
   try {
     const date = await redisClient.get('today')
     const dateId = JSON.parse(date).id
