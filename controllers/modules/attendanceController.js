@@ -4,7 +4,9 @@ const { Attendance } = require('../../models')
 
 exports.getQrcode = async function (req, res, next) {
   try {
-    const punchQrId = await redisClient.get('punchQrId')
+    const dailyCache = await redisClient.json.get('dailyCache')
+
+    const punchQrId = dailyCache.punchQrId
     return res.json({ message: 'get qr successfully', punchQrId })
   } catch (err) {
     next(err)
@@ -15,15 +17,13 @@ exports.qrPunch = async function (req, res, next) {
   try {
     const employeeId = req.user.id
     const { punchQrId, punch } = req.body
-    const [checkUuid, todayJSON] = await Promise.all([
-      redisClient.get('punchQrId'),
-      redisClient.get('today'),
-    ])
-    if (!(checkUuid === punchQrId)) {
+    const dailyCache = await redisClient.json.get('dailyCache')
+
+    if (!(dailyCache.punchQrId === punchQrId)) {
       const message = 'Id is expired'
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
-    const dateId = JSON.parse(todayJSON).id
+    const dateId = dailyCache.today.id
     const attendance = await Attendance.findOne({
       where: {
         dateId,
@@ -51,9 +51,8 @@ exports.punchIn = async function (req, res, next) {
   try {
     const { id: employeeId } = req.params
     const { punchIn } = req.body
-    const todayJSON = await redisClient.get('today')
-    const today = JSON.parse(todayJSON)
-    const dateId = today.id
+    const dailyCache = await redisClient.json.get('dailyCache')
+    const dateId = dailyCache.today.id
     const attendance = await Attendance.create(
       { dateId, employeeId, punchIn },
       { attributes: { exclude: ['createdAt', 'updatedAt'] } }

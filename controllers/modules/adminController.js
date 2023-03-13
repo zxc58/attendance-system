@@ -13,8 +13,8 @@ const { or, lt, ne } = Sequelize.Op
 const defaultPassword = process.env.DEFAULT_PASSWORD
 exports.getUnworking = async function (req, res, next) {
   try {
-    const todayJSON = await redisClient.get('today')
-    const dateId = JSON.parse(todayJSON).id
+    const dailyCache = await redisClient.json.get('dailyCache')
+    const dateId = dailyCache.today.id
     const employees = await Employee.findAll({
       where: {
         '$Attendances.id$': null,
@@ -82,8 +82,8 @@ exports.unlockAccount = async function (req, res, next) {
 }
 exports.getAbsenteeism = async function (req, res, next) {
   try {
-    const date = await redisClient.get('today')
-    const dateId = JSON.parse(date).id
+    const dailyCache = await redisClient.json.get('dailyCache')
+    const dateId = dailyCache.today.id
     const attendances = await Attendance.findAll({
       where: {
         dateId: {

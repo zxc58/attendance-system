@@ -1,5 +1,4 @@
 const httpStatus = require('http-status')
-const short = require('short-uuid')
 const { uploadFile } = require('../../helpers/imgur')
 const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const redisClient = require('../../config/redis')
@@ -23,7 +22,7 @@ exports.updateAvatar = async function (req, res, next) {
     }
     employee.avatar = url
     await employee.save()
-    return res.json({ message: 'successfully', avatar: data.Location })
+    return res.json({ message: 'successfully', avatar: url })
   } catch (err) {
     next(err)
   }
@@ -80,9 +79,8 @@ exports.getPersonalAttendances = async function (req, res, next) {
     const { date } = req.query
     const { hireDateId } = req.user
     if (date === 'today') {
-      const todayJSON = await redisClient.get('today')
-      const today = JSON.parse(todayJSON)
-      const dateId = today.id
+      const dailyCache = await redisClient.json.get('dailyCache')
+      const dateId = dailyCache.today.id
       const attendance = await Attendance.findOne({
         where: {
           employeeId,
@@ -97,8 +95,9 @@ exports.getPersonalAttendances = async function (req, res, next) {
       const message = 'Get today punching successfully'
       return res.json({ message, attendances: attendance.toJSON() })
     } else if (date === 'recent') {
-      const recentDates = await redisClient.get('recentDates')
-      const dateIds = JSON.parse(recentDates).map((e) => e.id)
+      const dailyCache = await redisClient.json.get('dailyCache')
+
+      const dateIds = dailyCache.recentDates.map((e) => e.id)
       const attendances = await Calendar.findAll({
         where: {
           id: {

@@ -41,7 +41,11 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         },
       },
-      isLocked: DataTypes.BOOLEAN,
+      incorrect: {
+        type: DataTypes.TINYINT.UNSIGNED,
+        allowNull: false,
+        defaultValue: 0,
+      },
       avatar: DataTypes.STRING,
     },
     {

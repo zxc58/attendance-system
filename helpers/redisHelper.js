@@ -33,11 +33,12 @@ async function periodFunction(redisClient) {
       logging: false,
     }),
   ])
-  await Promise.all([
-    redisClient.set('today', JSON.stringify(today.toJSON())),
-    redisClient.set('recentDates', JSON.stringify(recentDates)),
-    redisClient.set('punchQrId', punchQrId),
-  ])
+  const dailyCache = {
+    recentDates,
+    punchQrId,
+    today: today.toJSON(),
+  }
+  redisClient.json.set('dailyCache', '$', dailyCache)
   const expireTime = getRevisedTime().add(24, 'h').diff(getNowTime(), 's')
   setTimeout(periodFunction, expireTime * 1000, redisClient)
 }

@@ -6,11 +6,12 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASSWORD,
   },
 })
-const sendMail = (to, user) => {
+const sendMail = (user) => {
+  if (!user.email) return
   transporter
     .sendMail({
       from: process.env.EMAIL_SENDER,
-      to,
+      to: user.email,
       subject: 'An account has been locked',
       html: `<h1>帳號: ${
         user.account

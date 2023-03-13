@@ -3,7 +3,6 @@ const passport = require('passport')
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local')
 const bcryptjs = require('bcryptjs')
-const redisClient = require('./redis')
 const { Employee } = require('../models')
 const { momentTW } = require('../helpers/timeHelper')
 const sendMail = require('../helpers/emailHelper')
@@ -23,32 +22,14 @@ passport.use(
           { attributes: { exclude: ['createdAt', 'updatedAt'] } }
         )
         if (!user) {
-          return done(null, null, 'Account do not exist')
+          return done(null, null, 'Account does not exist')
         }
-        if (user.isLocked) {
+        if (user.incorrect >= 5) {
           return done(null, null, 'Wrong times over 5')
         }
         if (!bcryptjs.compareSync(password, user.password)) {
-          const wrongTimes = await redisClient.get(`account:${account}`)
-          if (+wrongTimes === 4) {
-            const admins = await Employee.findAll({
-              where: { isAdmin: true },
-              raw: true,
-            })
-            let to = ''
-            admins.forEach((element) => {
-              to += `${element.email} `
-            })
-            sendMail(to, user.toJSON())
-            user.isLocked = true
-            await Promise.all([
-              user.save(),
-              redisClient.del(`account:${account}`),
-            ])
-          } else {
-            const newWrongTimes = wrongTimes ? +wrongTimes + 1 : 1
-            await redisClient.set(`account:${account}`, newWrongTimes)
-          }
+          if (user.incorrect === 4) sendMail(user.toJSON())
+          await user.increment('incorrect')
           return done(null, null, 'Password wrong')
         }
         return done(null, user.toJSON())
