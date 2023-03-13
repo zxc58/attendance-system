@@ -1,7 +1,9 @@
 // Requirements
 if (process.env.NODE_ENV !== 'production') {
   const result = require('dotenv').config()
-  if (result.error) { throw new Error('Please provide .env file') }
+  if (result.error) {
+    throw new Error('Please provide .env file')
+  }
 }
 const cors = require('cors')
 const express = require('express')

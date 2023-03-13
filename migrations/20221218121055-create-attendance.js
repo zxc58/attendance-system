@@ -1,49 +1,49 @@
 'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Attendances', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       employee_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'Employees',
-          key: 'id'
-        }
+          key: 'id',
+        },
       },
       punch_in: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       punch_out: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       date_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: 'Calendar',
-          key: 'id'
-        }
+          key: 'id',
+        },
       },
       created_at: {
         defaultValue: Sequelize.fn('now'),
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updated_at: {
         defaultValue: Sequelize.fn('now'),
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     })
   },
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Attendances')
-  }
+  },
 }
