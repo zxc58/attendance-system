@@ -5,6 +5,7 @@ const {
 } = require('../../controllers')
 const router = Router()
 const {
+  multer: upload,
   validator: {
     bodyPassword,
     bodyPunchIn,
@@ -16,9 +17,6 @@ const {
   },
 } = require('../../middlewares')
 //
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
 
 router.post(
   '/:id/avatar',

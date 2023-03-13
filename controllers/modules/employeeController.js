@@ -1,17 +1,14 @@
 const httpStatus = require('http-status')
-const AWS = require('aws-sdk')
 const short = require('short-uuid')
+const { uploadFile } = require('../../helpers/imgur')
 const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const redisClient = require('../../config/redis')
 const { Op } = Sequelize
 
-const accessKeyId = process.env.AWS_IAM_ACCESS_KEY_ID
-const secretAccessKey = process.env.AWS_IAM_SECRET_ACCESS_KEY
-const s3 = new AWS.S3({ accessKeyId, secretAccessKey })
-
 exports.updateAvatar = async function (req, res, next) {
   try {
     const { id } = req.params
+    const file = req.file
     const employee = await Employee.findByPk(id, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     })
@@ -19,27 +16,14 @@ exports.updateAvatar = async function (req, res, next) {
       const message = 'Do not found resource of this id'
       return res.status(httpStatus.BAD_REQUEST).json({ message })
     }
-    const params = {
-      Bucket: process.env.AWS_S3_BUCKET,
-      Key: short.generate(),
-      Body: req.file.buffer,
-      ACL: 'public-read',
-      ContentType: req.file.mimetype,
+    const url = await uploadFile(file)
+    if (!url) {
+      const message = 'update avatar fail'
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
     }
-    s3.upload(params, async function (err, data) {
-      try {
-        if (err) {
-          const message = 'update avatar fail'
-          return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
-        }
-        employee.avatar = data.Location
-        await employee.save()
-        return res.json({ message: 'successfully', avatar: data.Location })
-      } catch (err) {
-        const message = 'Update avatar fail'
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
-      }
-    })
+    employee.avatar = url
+    await employee.save()
+    return res.json({ message: 'successfully', avatar: data.Location })
   } catch (err) {
     next(err)
   }
