@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "initDB": "sequelize db:migrate && sequelize db:seed:all",
     "swagger": "node swagger/swagger-autogen.js",
-    "lint": "eslint  \"**/*.js\" --fix",
+    "lint": "npx eslint . --ext .js --fix",
+    "format": "npx prettier . --write",
     "prepare": "husky install"
   },
   "keywords": [],
@@ -21,8 +22,8 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
-    "swagger-autogen": "^2.22.0",
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "swagger-autogen": "^2.22.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.245.0",
@@ -35,6 +36,7 @@
     "express-validator": "^6.14.2",
     "geolib": "^3.3.3",
     "http-status": "^1.6.1",
+    "jsdoc": "^4.0.0",
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",

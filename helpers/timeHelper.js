@@ -16,7 +16,10 @@ exports.getNowTime = function () {
  * @returns moment object
  */
 exports.getRevisedTime = function () {
-  return moment().subtract(dividedHour, 'hour').startOf('day').add(dividedHour, 'hour')
+  return moment()
+    .subtract(dividedHour, 'hour')
+    .startOf('day')
+    .add(dividedHour, 'hour')
 }
 
 exports.getRevisedDate = function () {

@@ -1,20 +1,23 @@
-// Requirements
 const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
 const { Attendance } = require('../../models')
-exports.getQrcode = async (req, res, next) => {
+
+exports.getQrcode = async function (req, res, next) {
   try {
     const punchQrId = await redisClient.get('punchQrId')
     return res.json({ message: 'get qr successfully', punchQrId })
-  } catch (err) { next(err) }
+  } catch (err) {
+    next(err)
+  }
 }
-exports.qrPunch = async (req, res, next) => {
+
+exports.qrPunch = async function (req, res, next) {
   try {
     const employeeId = req.user.id
     const { punchQrId, punch } = req.body
     const [checkUuid, todayJSON] = await Promise.all([
       redisClient.get('punchQrId'),
-      redisClient.get('today')
+      redisClient.get('today'),
     ])
     if (!(checkUuid === punchQrId)) {
       const message = 'Id is expired'
@@ -24,8 +27,8 @@ exports.qrPunch = async (req, res, next) => {
     const attendance = await Attendance.findOne({
       where: {
         dateId,
-        employeeId
-      }
+        employeeId,
+      },
     })
     if (attendance) {
       attendance.punchOut = punch
@@ -34,26 +37,35 @@ exports.qrPunch = async (req, res, next) => {
       await Attendance.create({
         employeeId,
         punchIn: punch,
-        dateId
+        dateId,
       })
     }
     const message = 'QR code punch successfully'
     return res.json({ message })
-  } catch (err) { next(err) }
+  } catch (err) {
+    next(err)
+  }
 }
-exports.punchIn = async (req, res, next) => {
+
+exports.punchIn = async function (req, res, next) {
   try {
     const { id: employeeId } = req.params
     const { punchIn } = req.body
     const todayJSON = await redisClient.get('today')
     const today = JSON.parse(todayJSON)
     const dateId = today.id
-    const attendance = await Attendance.create({ dateId, employeeId, punchIn })
+    const attendance = await Attendance.create(
+      { dateId, employeeId, punchIn },
+      { attributes: { exclude: ['createdAt', 'updatedAt'] } }
+    )
     const message = 'Punch in successfully'
-    return res.json({ message, attendance: attendance.toJSON() })
-  } catch (error) { next(error) }
+    return res.json({ message, data: attendance.toJSON() })
+  } catch (error) {
+    next(error)
+  }
 }
-exports.punchOut = async (req, res, next) => {
+
+exports.punchOut = async function (req, res, next) {
   try {
     const { attendanceId } = req.params
     const { punchOut } = req.body
@@ -65,6 +77,8 @@ exports.punchOut = async (req, res, next) => {
     attendance.punchOut = punchOut
     const newAttendance = await attendance.save()
     const message = 'Punch out successfully'
-    return res.json({ message, attendance: newAttendance.toJSON() })
-  } catch (error) { next(error) }
+    return res.json({ message, data: newAttendance.toJSON() })
+  } catch (error) {
+    next(error)
+  }
 }
