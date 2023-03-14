@@ -3,20 +3,16 @@ const jwt = require('jsonwebtoken')
 const { Employee } = require('../../models')
 const passport = require('../../config/passport')
 const { signJWT } = require('../../helpers/jwtHelper')
-
+const { syncTry } = require('../../utils/try')
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
-
 exports.localAuthenticate = async function (req, res, next) {
   passport.authenticate(
     'local',
     { session: false },
     async (err, user, info) => {
-      if (err) {
-        return next(err)
-      }
-      if (info && !user) {
+      if (err) return next(err)
+      if (info && !user)
         return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
-      }
       if (user) {
         delete user.password
         return signJWT(res, user, true)
@@ -32,8 +28,12 @@ exports.refreshToken = async function (req, res, next) {
       const message = 'No refresh token'
       return res.status(httpStatus.BAD_REQUEST).json({ message })
     }
-    const refreshTokenPayload = jwt.verify(refreshToken, refreshTokenSecret)
-    if (!refreshTokenPayload) {
+    const [err, refreshTokenPayload] = syncTry(
+      jwt.verify,
+      refreshToken,
+      refreshTokenSecret
+    )
+    if (err) {
       const message = 'Refresh token is expired'
       return res.status(httpStatus.BAD_REQUEST).json({ message })
     }

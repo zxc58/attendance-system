@@ -44,12 +44,7 @@ passport.use(
 passport.use(
   new JwtStrategy(jwtConfig, async (accessTokenPayload, done) => {
     try {
-      const { user, exp } = accessTokenPayload
-      const isExpired = momentTW().isAfter(momentTW(exp * 1000))
-      if (isExpired) {
-        return done(null, null, 'Access is expired')
-      }
-
+      const { user } = accessTokenPayload
       return done(null, user)
     } catch (error) {
       console.error(error)

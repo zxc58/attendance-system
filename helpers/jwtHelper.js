@@ -14,18 +14,14 @@ const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
  * @returns
  */
 exports.signJWT = (res, user, signRefreshToken) => {
-  const accessToken = jwt.sign(
-    { user, type: 'access_token' },
-    accessTokenSecret,
-    { expiresIn: `${accessTokenMaxage}s` }
-  )
+  const accessToken = jwt.sign(user, accessTokenSecret, {
+    expiresIn: `${accessTokenMaxage}s`,
+  })
   const responseData = { accessToken }
   if (signRefreshToken) {
-    const refreshToken = jwt.sign(
-      { type: 'refresh_token', userId: user.id },
-      refreshTokenSecret,
-      { expiresIn: `${refreshTokenMaxage}s` }
-    )
+    const refreshToken = jwt.sign({ userId: user.id }, refreshTokenSecret, {
+      expiresIn: `${refreshTokenMaxage}s`,
+    })
     responseData.refreshToken = refreshToken
   }
   return res.json({ message: 'Get jwt', ...responseData })
