@@ -16,3 +16,6 @@ async function uploadFile(file) {
   const uploadReturning = await client.upload(fileObject)
   return uploadReturning?.data?.link
 }
+module.exports = {
+  uploadFile,
+}

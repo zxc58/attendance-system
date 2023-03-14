@@ -1,5 +1,5 @@
 const httpStatus = require('http-status')
-const { uploadFile } = require('../../helpers/imgur')
+const { uploadFile } = require('../../services/imgur')
 const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const redisClient = require('../../config/redis')
 const { Op } = Sequelize

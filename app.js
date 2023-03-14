@@ -25,8 +25,7 @@ app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/', router)
 
 // Listening
-app.listen(port, async () => {
+app.listen(port, () => {
   console.info('Server starts.')
-  // await redisClient.connect()
-  console.info('Redis start.')
+  // redisClient.connect()
 })

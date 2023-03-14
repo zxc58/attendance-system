@@ -5,7 +5,7 @@ const LocalStrategy = require('passport-local')
 const bcryptjs = require('bcryptjs')
 const { Employee } = require('../models')
 const { momentTW } = require('../helpers/timeHelper')
-const sendMail = require('../helpers/emailHelper')
+const sendMail = require('../services/email')
 // Constants
 const jwtConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
