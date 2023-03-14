@@ -18,5 +18,5 @@ router.post(
   // #swagger.tags = ['Auth']
   // #swagger.description = 'Api for refresh access token'
 )
-
+router.get('/logout', authController.signout)
 module.exports = router

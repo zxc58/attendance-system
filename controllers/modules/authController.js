@@ -1,10 +1,9 @@
 const httpStatus = require('http-status')
-const jwt = require('jsonwebtoken')
-const { Employee } = require('../../models')
+const dayjs = require('dayjs')
+const { Token } = require('../../models')
 const passport = require('../../config/passport')
-const { signJWT } = require('../../helpers/jwtHelper')
-const { syncTry } = require('../../utils/try')
-const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET
+const { signJWT, sendJWT } = require('../../helpers/jwtHelper')
+const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
 exports.localAuthenticate = async function (req, res, next) {
   passport.authenticate(
     'local',
@@ -14,8 +13,15 @@ exports.localAuthenticate = async function (req, res, next) {
       if (info && !user)
         return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
       if (user) {
-        delete user.password
-        return signJWT(res, user, true)
+        const jwt = signJWT(user)
+
+        await Token.create({
+          token: jwt.refreshToken,
+          ip: req.ip ?? '',
+          employeeId: user.id,
+          expiredAt: dayjs().add(refreshTokenMaxage, 'day').toDate(),
+        })
+        return sendJWT(res, jwt, 'Sign in successfully, return access token')
       }
     }
   )(req, res, next)
@@ -23,25 +29,55 @@ exports.localAuthenticate = async function (req, res, next) {
 
 exports.refreshToken = async function (req, res, next) {
   try {
-    const { refreshToken } = req.body
+    const { refresh_token: refreshToken } = req.signedCookies
     if (!refreshToken) {
       const message = 'No refresh token'
       return res.status(httpStatus.BAD_REQUEST).json({ message })
     }
-    const [err, refreshTokenPayload] = syncTry(
-      jwt.verify,
-      refreshToken,
-      refreshTokenSecret
-    )
-    if (err) {
-      const message = 'Refresh token is expired'
-      return res.status(httpStatus.BAD_REQUEST).json({ message })
-    }
-    const { userId } = refreshTokenPayload
-    const employee = await Employee.findByPk(userId, {
-      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+    const token = Token.findOne({
+      where: {
+        token: refreshToken,
+      },
     })
-    signJWT(res, employee.toJSON(), false)
+    if (!token)
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .json({ message: 'Invalid refresh token' })
+
+    if (dayjs().isAfter(token.expiredAt))
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .json({ message: 'Token is expired' })
+
+    const employee = await token.getEmployee()
+    const jwt = signJWT(employee.toJSON())
+    await token.update({
+      token: jwt.refreshToken,
+      expiredAt: dayjs().add(refreshTokenMaxage, 'day').toDate(),
+    })
+    return sendJWT(res, jwt, 'refresh JWT successfully')
+  } catch (err) {
+    next(err)
+  }
+}
+
+exports.signout = async function (req, res, next) {
+  try {
+    const { refresh_token: refreshToken } = req.signedCookies
+    await Token.destroy({
+      where: {
+        token: refreshToken,
+      },
+    })
+    res.cookie('refresh_token', '', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      signed: true,
+      expires: dayjs().subtract(1, 'day').toDate(),
+    })
+    const message = 'Sign out successfully'
+    return res.json({ message })
   } catch (err) {
     next(err)
   }

@@ -1,28 +1,28 @@
 // @ts-check
 const jwt = require('jsonwebtoken')
+const { v4: uuid } = require('uuid')
 const accessTokenSecret =
   process.env.ACCESS_TOKEN_SECRET ?? 'ACCESS_TOKEN_SECRET'
-const refreshTokenSecret =
-  process.env.REFRESH_TOKEN_SECRET ?? 'REFRESH_TOKEN_SECRET'
 const accessTokenMaxage = Number(process.env.ACCESS_TOKEN_MAXAGE ?? 30000)
-const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
+
 /**
  *
- * @param {object} res Express response object
  * @param {object} user user information
- * @param {boolean} signRefreshToken Whether sign a refresh token
- * @returns
+ * @returns {{accessToken:string,refreshToken:string}}
  */
-exports.signJWT = (res, user, signRefreshToken) => {
+exports.signJWT = function (user) {
   const accessToken = jwt.sign(user, accessTokenSecret, {
     expiresIn: `${accessTokenMaxage}s`,
   })
-  const responseData = { accessToken }
-  if (signRefreshToken) {
-    const refreshToken = jwt.sign({ userId: user.id }, refreshTokenSecret, {
-      expiresIn: `${refreshTokenMaxage}s`,
-    })
-    responseData.refreshToken = refreshToken
-  }
-  return res.json({ message: 'Get jwt', ...responseData })
+  return { accessToken, refreshToken: uuid() }
+}
+
+exports.sendJWT = function (res, jwt, message = 'Send JWT') {
+  res.cookie('refresh_token', jwt.refreshToken, {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+    signed: true,
+  })
+  res.json({ message, data: { accessToken: jwt.accessToken } })
 }

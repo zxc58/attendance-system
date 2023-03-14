@@ -15,7 +15,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('Employees', 'is_locked')
+    await queryInterface.removeColumn('Employees', 'incorrect')
     await queryInterface.removeColumn('Employees', 'avatar')
   },
 }
