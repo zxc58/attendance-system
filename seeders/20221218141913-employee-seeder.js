@@ -48,7 +48,6 @@ module.exports = {
     ]
     await queryInterface.bulkInsert('Employees', employees)
   },
-
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Employees', {})
   },

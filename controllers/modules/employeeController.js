@@ -3,7 +3,6 @@ const { uploadFile } = require('../../services/imgur')
 const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const redisClient = require('../../config/redis')
 const { Op } = Sequelize
-
 exports.updateAvatar = async function (req, res, next) {
   try {
     const { id } = req.params
@@ -27,7 +26,6 @@ exports.updateAvatar = async function (req, res, next) {
     next(err)
   }
 }
-
 exports.getEmployee = async function (req, res, next) {
   try {
     const { id } = req.params
@@ -44,7 +42,6 @@ exports.getEmployee = async function (req, res, next) {
     next(error)
   }
 }
-
 exports.patchEmployee = async function (req, res, next) {
   try {
     const { id } = req.params
@@ -72,7 +69,6 @@ exports.patchEmployee = async function (req, res, next) {
     next(error)
   }
 }
-
 exports.getPersonalAttendances = async function (req, res, next) {
   try {
     const { id: employeeId } = req.params
@@ -96,7 +92,6 @@ exports.getPersonalAttendances = async function (req, res, next) {
       return res.json({ message, attendances: attendance.toJSON() })
     } else if (date === 'recent') {
       const dailyCache = await redisClient.json.get('dailyCache')
-
       const dateIds = dailyCache.recentDates.map((e) => e.id)
       const attendances = await Calendar.findAll({
         where: {

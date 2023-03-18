@@ -21,7 +21,6 @@ exports.getRevisedTime = function () {
     .startOf('day')
     .add(dividedHour, 'hour')
 }
-
 exports.getRevisedDate = function () {
   return moment().subtract(dividedHour, 'hour').startOf('day').add(8, 'h')
 }

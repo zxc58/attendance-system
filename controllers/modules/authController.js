@@ -3,6 +3,7 @@ const dayjs = require('dayjs')
 const { Token } = require('../../models')
 const passport = require('../../config/passport')
 const { signJWT, sendJWT } = require('../../helpers/jwtHelper')
+const { verify } = require('jsonwebtoken')
 const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
 exports.localAuthenticate = async function (req, res, next) {
   passport.authenticate(
@@ -14,7 +15,6 @@ exports.localAuthenticate = async function (req, res, next) {
         return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
       if (user) {
         const jwt = signJWT(user)
-
         await Token.create({
           token: jwt.refreshToken,
           ip: req.ip ?? '',
@@ -26,7 +26,6 @@ exports.localAuthenticate = async function (req, res, next) {
     }
   )(req, res, next)
 }
-
 exports.refreshToken = async function (req, res, next) {
   try {
     const { refresh_token: refreshToken } = req.signedCookies
@@ -43,12 +42,10 @@ exports.refreshToken = async function (req, res, next) {
       return res
         .status(httpStatus.BAD_REQUEST)
         .json({ message: 'Invalid refresh token' })
-
     if (dayjs().isAfter(token.expiredAt))
       return res
         .status(httpStatus.UNAUTHORIZED)
         .json({ message: 'Token is expired' })
-
     const employee = await token.getEmployee()
     const jwt = signJWT(employee.toJSON())
     await token.update({
@@ -60,7 +57,6 @@ exports.refreshToken = async function (req, res, next) {
     next(err)
   }
 }
-
 exports.signout = async function (req, res, next) {
   try {
     const { refresh_token: refreshToken } = req.signedCookies
@@ -80,5 +76,24 @@ exports.signout = async function (req, res, next) {
     return res.json({ message })
   } catch (err) {
     next(err)
+  }
+}
+exports.verifyJWT = async function (req, res, next) {
+  try {
+    const { refresh_token: refreshToken } = req.signedCookies
+    if (!refreshToken)
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .json({ message: 'Please log in again' })
+    const token = await Token.findOne({ where: { token: refreshToken } })
+    if (dayjs().isAfter(token.expiredAt))
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .json({ message: 'Token is expired' })
+    return res
+      .status(httpStatus.MOVED_PERMANENTLY)
+      .redirect(`/employees/${token.employeeId}`)
+  } catch (error) {
+    next(error)
   }
 }

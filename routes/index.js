@@ -9,7 +9,6 @@ const {
   authenticator: { jwtAuth, adminAuth },
 } = require('../middlewares')
 const router = Router()
-
 router.use('/auth', authRouter)
 router.use('/attendances', attendanceRouter)
 router.use('/employees', jwtAuth, employeeRouter)
@@ -21,5 +20,4 @@ router.use('/', (error, req, res, next) => {
   res.status(500).json({ error })
   return console.error(error)
 })
-
 module.exports = router

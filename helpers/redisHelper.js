@@ -2,7 +2,6 @@ const { Calendar, Sequelize } = require('../models')
 const { getRevisedTime, getNowTime, getRevisedDate } = require('./timeHelper')
 const { Op } = Sequelize
 const { v4: uuidv4 } = require('uuid')
-
 async function periodFunction(redisClient) {
   const date = getRevisedDate().toDate()
   const before30Date = getRevisedDate().subtract(30, 'd').toDate()

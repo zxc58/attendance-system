@@ -2,8 +2,8 @@
   "development": {
     "username": "root",
     "password": "password",
-    "database": "titansoft",
-    "host": "127.0.0.1",
+    "database": "attendance",
+    "host": "localhost",
     "dialect": "mysql",
     "logging": false
   },

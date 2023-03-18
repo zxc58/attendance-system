@@ -39,7 +39,6 @@ exports.getUnworking = async function (req, res, next) {
         'phone',
         [sequelize.col('Department.name'), 'departmentName'],
       ],
-
       raw: true,
       nest: true,
     })

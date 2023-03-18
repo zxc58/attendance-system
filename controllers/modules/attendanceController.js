@@ -1,24 +1,20 @@
 const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
 const { Attendance } = require('../../models')
-
 exports.getQrcode = async function (req, res, next) {
   try {
     const dailyCache = await redisClient.json.get('dailyCache')
-
     const punchQrId = dailyCache.punchQrId
     return res.json({ message: 'get qr successfully', punchQrId })
   } catch (err) {
     next(err)
   }
 }
-
 exports.qrPunch = async function (req, res, next) {
   try {
     const employeeId = req.user.id
     const { punchQrId, punch } = req.body
     const dailyCache = await redisClient.json.get('dailyCache')
-
     if (!(dailyCache.punchQrId === punchQrId)) {
       const message = 'Id is expired'
       return res.status(httpStatus.NOT_FOUND).json({ message })
@@ -46,7 +42,6 @@ exports.qrPunch = async function (req, res, next) {
     next(err)
   }
 }
-
 exports.punchIn = async function (req, res, next) {
   try {
     const { id: employeeId } = req.params
@@ -63,7 +58,6 @@ exports.punchIn = async function (req, res, next) {
     next(error)
   }
 }
-
 exports.punchOut = async function (req, res, next) {
   try {
     const { attendanceId } = req.params

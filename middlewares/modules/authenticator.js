@@ -3,12 +3,9 @@ const httpStatus = require('http-status')
 const authenticator = {
   jwtAuth: (req, res, next) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
-      if (err) {
-        return next(err)
-      }
-      if (!user && info) {
+      if (err) return next(err)
+      if (!user && info)
         return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
-      }
       req.user = user
       return next()
     })(req, res, next)

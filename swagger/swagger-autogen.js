@@ -25,5 +25,4 @@ const doc = {
     },
   },
 }
-
 swaggerAutogen(outputFile, endpointFile, doc)

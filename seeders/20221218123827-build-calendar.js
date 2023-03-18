@@ -15,7 +15,6 @@ module.exports = {
       ...calendar2023,
     ])
   },
-
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('Calendar', {})
   },

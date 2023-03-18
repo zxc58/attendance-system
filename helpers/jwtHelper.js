@@ -4,7 +4,6 @@ const { v4: uuid } = require('uuid')
 const accessTokenSecret =
   process.env.ACCESS_TOKEN_SECRET ?? 'ACCESS_TOKEN_SECRET'
 const accessTokenMaxage = Number(process.env.ACCESS_TOKEN_MAXAGE ?? 30000)
-
 /**
  *
  * @param {object} user user information
@@ -16,7 +15,6 @@ exports.signJWT = function (user) {
   })
   return { accessToken, refreshToken: uuid() }
 }
-
 exports.sendJWT = function (res, jwt, message = 'Send JWT') {
   res.cookie('refresh_token', jwt.refreshToken, {
     httpOnly: true,

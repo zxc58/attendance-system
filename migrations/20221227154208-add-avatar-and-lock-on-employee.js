@@ -1,5 +1,4 @@
 'use strict'
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -13,7 +12,6 @@ module.exports = {
       allowNull: true,
     })
   },
-
   async down(queryInterface, Sequelize) {
     await queryInterface.removeColumn('Employees', 'incorrect')
     await queryInterface.removeColumn('Employees', 'avatar')

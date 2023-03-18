@@ -17,7 +17,6 @@ const {
   },
 } = require('../../middlewares')
 //
-
 router.post(
   '/:id/avatar',
   upload.single('image'),
@@ -68,5 +67,4 @@ router.patch(
       #swagger.description = 'hahahaApi for employee punch out'
   */
 )
-
 module.exports = router
