@@ -6,5 +6,6 @@ const corsConfig = cors({
     process.env.FRONTEND_URL,
   ],
   credentials: true,
+  exposedHeaders: 'X-Refresh-Token',
 })
 module.exports = corsConfig

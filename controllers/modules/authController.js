@@ -1,9 +1,11 @@
+const { verify } = require('jsonwebtoken')
 const httpStatus = require('http-status')
 const dayjs = require('dayjs')
-const { Token } = require('../../models')
+const sequelizeQuery = require('../../helpers/sequelizeQuery')
+const { Employee, Token, sequelize } = require('../../models')
 const passport = require('../../config/passport')
+const cookiesConfig = require('../../config/cookies')
 const { signJWT, sendJWT } = require('../../helpers/jwtHelper')
-const { verify } = require('jsonwebtoken')
 const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
 exports.localAuthenticate = async function (req, res, next) {
   passport.authenticate(
@@ -15,13 +17,24 @@ exports.localAuthenticate = async function (req, res, next) {
         return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
       if (user) {
         const jwt = signJWT(user)
-        await Token.create({
-          token: jwt.refreshToken,
-          ip: req.ip ?? '',
-          employeeId: user.id,
-          expiredAt: dayjs().add(refreshTokenMaxage, 'day').toDate(),
+        const [attendances] = await Promise.all([
+          sequelizeQuery.getSomeoneAttendance(user),
+          Token.create({
+            token: jwt.refreshToken,
+            ip: req.ip ?? '',
+            employeeId: user.id,
+            expiredAt: dayjs().add(refreshTokenMaxage, 'second').toDate(),
+          }),
+        ])
+        res.cookie(
+          'refresh_token',
+          jwt.refreshToken,
+          cookiesConfig.refreshToken
+        )
+        res.json({
+          message: 'Sign in successfully',
+          data: { accessToken: jwt.accessToken, user, attendances },
         })
-        return sendJWT(res, jwt, 'Sign in successfully, return access token')
       }
     }
   )(req, res, next)
@@ -29,30 +42,35 @@ exports.localAuthenticate = async function (req, res, next) {
 exports.refreshToken = async function (req, res, next) {
   try {
     const { refresh_token: refreshToken } = req.signedCookies
-    if (!refreshToken) {
-      const message = 'No refresh token'
-      return res.status(httpStatus.BAD_REQUEST).json({ message })
-    }
-    const token = Token.findOne({
+    if (!refreshToken)
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .header('X-Refresh-Token', 'false')
+        .json({ message: 'No refresh token' })
+    const token = await Token.findOne({
       where: {
         token: refreshToken,
       },
     })
     if (!token)
       return res
-        .status(httpStatus.BAD_REQUEST)
+        .status(httpStatus.UNAUTHORIZED)
+        .header('X-Refresh-Token', 'false')
         .json({ message: 'Invalid refresh token' })
     if (dayjs().isAfter(token.expiredAt))
       return res
+        .header('X-Refresh-Token', 'false')
         .status(httpStatus.UNAUTHORIZED)
         .json({ message: 'Token is expired' })
     const employee = await token.getEmployee()
     const jwt = signJWT(employee.toJSON())
     await token.update({
       token: jwt.refreshToken,
-      expiredAt: dayjs().add(refreshTokenMaxage, 'day').toDate(),
+      expiredAt: dayjs().add(refreshTokenMaxage, 'second').toDate(),
     })
-    return sendJWT(res, jwt, 'refresh JWT successfully')
+    res.cookie('refresh_token', jwt.refreshToken, cookiesConfig.refreshToken)
+    const message = 'Refresh JWT successfully'
+    res.json({ message, data: { accessToken: jwt.accessToken } })
   } catch (err) {
     next(err)
   }
@@ -60,18 +78,8 @@ exports.refreshToken = async function (req, res, next) {
 exports.signout = async function (req, res, next) {
   try {
     const { refresh_token: refreshToken } = req.signedCookies
-    await Token.destroy({
-      where: {
-        token: refreshToken,
-      },
-    })
-    res.cookie('refresh_token', '', {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true,
-      signed: true,
-      expires: dayjs().subtract(1, 'day').toDate(),
-    })
+    await Token.destroy({ where: { token: refreshToken } })
+    res.clearCookie('refresh_token')
     const message = 'Sign out successfully'
     return res.json({ message })
   } catch (err) {
@@ -80,19 +88,9 @@ exports.signout = async function (req, res, next) {
 }
 exports.verifyJWT = async function (req, res, next) {
   try {
-    const { refresh_token: refreshToken } = req.signedCookies
-    if (!refreshToken)
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ message: 'Please log in again' })
-    const token = await Token.findOne({ where: { token: refreshToken } })
-    if (dayjs().isAfter(token.expiredAt))
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ message: 'Token is expired' })
-    return res
-      .status(httpStatus.MOVED_PERMANENTLY)
-      .redirect(`/employees/${token.employeeId}`)
+    const user = req.user
+    const attendances = await sequelizeQuery.getSomeoneAttendance(user)
+    return res.json({ data: { attendances, user } })
   } catch (error) {
     next(error)
   }
