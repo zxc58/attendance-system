@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 const corsConfig = require('./config/cors')
 const morganConfig = require('./config/morgan')
 const express = require('express')
+const UAParser = require('ua-parser-js')
 const cookieParser = require('cookie-parser')
 const swaggerUi = require('swagger-ui-express')
 const passport = require('./config/passport')
@@ -23,6 +24,12 @@ app.use(corsConfig)
 app.use(morganConfig)
 app.use(express.json())
 app.use(passport.initialize())
+app.use((req, res, next) => {
+  const userAgent = new UAParser(req.headers['user-agent'])
+  const result = userAgent.getResult()
+  req.userAgent = result
+  next()
+})
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/', router)
 // Listening

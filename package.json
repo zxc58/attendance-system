@@ -58,6 +58,7 @@
     "sequelize-cli": "^6.5.2",
     "short-uuid": "^4.2.2",
     "swagger-ui-express": "^4.6.0",
+    "ua-parser-js": "^1.0.34",
     "uuid": "^9.0.0"
   }
 }
