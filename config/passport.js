@@ -43,7 +43,9 @@ passport.use(
 passport.use(
   new JwtStrategy(jwtConfig, (accessTokenPayload, done) => {
     try {
-      const { user } = accessTokenPayload
+      const user = { ...accessTokenPayload }
+      delete user.exp
+      delete user.iat
       return done(null, user)
     } catch (error) {
       console.error(error)

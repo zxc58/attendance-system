@@ -14,7 +14,10 @@ exports.localAuthenticate = async function (req, res, next) {
     async (err, user, info) => {
       if (err) return next(err)
       if (info && !user)
-        return res.status(httpStatus.UNAUTHORIZED).json({ message: info })
+        return res
+          .header('X-Refresh-Token', 'false')
+          .status(httpStatus.UNAUTHORIZED)
+          .json({ message: info })
       if (user) {
         const jwt = signJWT(user)
         const [attendances] = await Promise.all([

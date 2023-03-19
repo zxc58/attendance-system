@@ -44,16 +44,17 @@ exports.qrPunch = async function (req, res, next) {
 }
 exports.punchIn = async function (req, res, next) {
   try {
-    const { id: employeeId } = req.params
+    const employeeId = Number(req.params.id)
     const { punchIn } = req.body
     const dailyCache = await redisClient.json.get('dailyCache')
     const dateId = dailyCache.today.id
-    const attendance = await Attendance.create(
-      { dateId, employeeId, punchIn },
-      { attributes: { exclude: ['createdAt', 'updatedAt'] } }
-    )
+    const attendance = await Attendance.create({ dateId, employeeId, punchIn })
+    const data = attendance.toJSON()
+    delete data.createdAt
+    delete data.updatedAt
+    data.punchOut = null
     const message = 'Punch in successfully'
-    return res.json({ message, data: attendance.toJSON() })
+    return res.json({ message, data })
   } catch (error) {
     next(error)
   }

@@ -46,25 +46,19 @@ exports.patchEmployee = async function (req, res, next) {
   try {
     const { id } = req.params
     const { password, phone, email } = req.body
-    const newData = {}
-    if (password) {
-      newData.password = password
-    }
-    if (phone) {
-      newData.phone = phone
-    }
-    if (email) {
-      newData.email = email
-    }
-    const employee = await Employee.findByPk(id)
+    const employee = await Employee.findByPk(id, {
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    })
     if (!employee) {
       const message = `Do not found employee ${id}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
-    employee.set(newData)
+    if (password) employee.password = password
+    if (phone) employee.phone = phone
+    if (email) employee.email = email
     const newEmployee = await employee.save()
-    const message = 'update password successfully'
-    return res.json({ message, employee: newEmployee.toJSON() })
+    const message = 'Update password successfully'
+    return res.json({ message, data: newEmployee.toJSON() })
   } catch (error) {
     next(error)
   }

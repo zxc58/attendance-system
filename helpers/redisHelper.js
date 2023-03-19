@@ -20,7 +20,7 @@ async function periodFunction(redisClient) {
       where: {
         date: {
           [Op.gte]: before30Date,
-          [Op.lt]: date,
+          [Op.lte]: date,
         },
       },
       attributes: {
