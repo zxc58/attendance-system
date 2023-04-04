@@ -8,39 +8,22 @@ async function periodFunction(redisClient) {
   const punchQrId = uuidv4()
   const [today, recentDates] = await Promise.all([
     Calendar.findOne({
-      where: {
-        date,
-      },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      where: { date },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
       logging: false,
     }),
     Calendar.findAll({
-      where: {
-        date: {
-          [Op.gte]: before30Date,
-          [Op.lte]: date,
-        },
-      },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'],
-      },
+      where: { date: { [Op.gte]: before30Date, [Op.lte]: date } },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
       raw: true,
       nest: true,
       order: [['date', 'DESC']],
       logging: false,
     }),
   ])
-  const dailyCache = {
-    recentDates,
-    punchQrId,
-    today: today.toJSON(),
-  }
+  const dailyCache = { recentDates, punchQrId, today: today.toJSON() }
   redisClient.json.set('dailyCache', '$', dailyCache)
   const expireTime = getRevisedTime().add(24, 'h').diff(getNowTime(), 's')
   setTimeout(periodFunction, expireTime * 1000, redisClient)
 }
-module.exports = {
-  periodFunction,
-}
+module.exports = { periodFunction }

@@ -26,7 +26,7 @@ router.get(
   // #swagger.description = 'Get absenteeism employees'
 )
 router.patch(
-  '/attendances/:id',
+  '/attendances',
   adminController.modifyAttendance
   // #swagger.tags = ['Admin']
   // #swagger.description = 'Modify Attendance '
