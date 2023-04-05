@@ -1,5 +1,5 @@
 'use strict'
-const moment = require('moment')
+const dayjs = require('dayjs')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -20,8 +20,8 @@ module.exports = {
         attendances.push({
           employee_id: e.employeeId,
           date_id: d.dateId,
-          punch_in: moment(d.date).add(16, 'h').toDate(),
-          punch_out: moment(d.date).add(24, 'h').toDate(),
+          punch_in: dayjs(d.date).add(16, 'h').toDate(),
+          punch_out: dayjs(d.date).add(24, 'h').toDate(),
         })
       })
     })

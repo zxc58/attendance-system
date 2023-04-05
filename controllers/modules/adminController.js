@@ -1,6 +1,6 @@
 const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
-const { momentTW } = require('../../helpers/timeHelper')
+const { dayjs } = require('../../helpers/timeHelper')
 const { getAbsentEmployees } = require('../../helpers/sequelizeQuery')
 const {
   Employee,
@@ -96,8 +96,8 @@ exports.modifyAttendance = async function (req, res, next) {
         default: { employeeId, dateId },
       })
     )[0]
-    attendance.punchIn = momentTW(date.date).add(8, 'h').toDate()
-    attendance.punchOut = momentTW(date.date).add(16, 'h').toDate()
+    attendance.punchIn = dayjs(date.date).add(8, 'h').toDate()
+    attendance.punchOut = dayjs(date.date).add(16, 'h').toDate()
     await attendance.save()
     const message = 'Modify attendance successfully'
     return res.json({ message })

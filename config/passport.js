@@ -2,9 +2,7 @@
 const passport = require('passport')
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt')
 const LocalStrategy = require('passport-local')
-const bcryptjs = require('bcryptjs')
 const { Employee } = require('../models')
-const { momentTW } = require('../helpers/timeHelper')
 const sendMail = require('../services/email')
 // Constants
 const jwtConfig = {

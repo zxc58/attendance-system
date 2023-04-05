@@ -1,11 +1,10 @@
-const { verify } = require('jsonwebtoken')
 const httpStatus = require('http-status')
 const dayjs = require('dayjs')
 const sequelizeQuery = require('../../helpers/sequelizeQuery')
-const { Employee, Token, sequelize } = require('../../models')
+const { Token } = require('../../models')
 const passport = require('../../config/passport')
 const cookiesConfig = require('../../config/cookies')
-const { signJWT, sendJWT } = require('../../helpers/jwtHelper')
+const { signJWT } = require('../../helpers/jwtHelper')
 const refreshTokenMaxage = Number(process.env.REFRESH_TOKEN_MAXAGE ?? 50000)
 exports.localAuthenticate = async function (req, res, next) {
   passport.authenticate(
