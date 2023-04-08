@@ -1,7 +1,7 @@
 const httpStatus = require('http-status')
 const dayjs = require('dayjs')
 const sequelizeQuery = require('../../helpers/sequelizeQuery')
-const { Token } = require('../../models')
+const { Token, Employees } = require('../../models')
 const passport = require('../../config/passport')
 const cookiesConfig = require('../../config/cookies')
 const { signJWT } = require('../../helpers/jwtHelper')
@@ -10,21 +10,21 @@ exports.localAuthenticate = async function (req, res, next) {
   passport.authenticate(
     'local',
     { session: false },
-    async (err, user, info) => {
+    async (err, employee, info) => {
       if (err) return next(err)
-      if (info && !user)
+      if (info && !employee)
         return res
           .header('X-Refresh-Token', 'false')
           .status(httpStatus.UNAUTHORIZED)
           .json({ message: info })
-      if (user) {
-        const jwt = signJWT(user)
+      if (employee) {
+        const jwt = signJWT(employee)
         const [attendances] = await Promise.all([
-          sequelizeQuery.getSomeoneAttendance(user),
+          sequelizeQuery.getSomeoneAttendance(employee),
           Token.create({
             token: jwt.refreshToken,
             ip: req.ip ?? '',
-            employeeId: user.id,
+            employeeId: employee.id,
             expiredAt: dayjs().add(refreshTokenMaxage, 'second').toDate(),
           }),
         ])
@@ -35,7 +35,11 @@ exports.localAuthenticate = async function (req, res, next) {
         )
         res.json({
           message: 'Sign in successfully',
-          data: { accessToken: jwt.accessToken, user, attendances },
+          data: {
+            accessToken: jwt.accessToken,
+            employee,
+            attendances,
+          },
         })
       }
     }
@@ -90,9 +94,10 @@ exports.signout = async function (req, res, next) {
 }
 exports.verifyJWT = async function (req, res, next) {
   try {
-    const user = req.user
-    const attendances = await sequelizeQuery.getSomeoneAttendance(user)
-    return res.json({ data: { attendances, user } })
+    const { employeeId } = req.employee
+    const employee = await Employees.findByPk(employeeId)
+    const attendances = await sequelizeQuery.getSomeoneAttendance(employee)
+    return res.json({ data: { attendances, employee: employee.toJSON() } })
   } catch (error) {
     next(error)
   }

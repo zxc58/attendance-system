@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  redis:
+    image: redis/redis-stack-server:latest
+    container_name: redis
+
+  database:
+    image: mysql
+    container_name: database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: attendance
+    ports:
+      - 3305:3306
+  backend:
+    build: 
+      context: .      
+      target: dev
+    container_name: backend
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules/
+      - /usr/src/app/uploads/
+    depends_on:
+      - redis
+      - database
+    ports:
+      - 3000:3000

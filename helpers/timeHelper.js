@@ -10,7 +10,6 @@ exports.dayjs = dayjs
 exports.getNowTime = () => dayjs.tz(dayjs())
 exports.getRevisedDate = () =>
   dayjs.tz(dayjs()).subtract(dividedHour, 'hour').startOf('day').tz('UTC', true)
-
 exports.getRevisedTime = () =>
   dayjs
     .tz(dayjs())

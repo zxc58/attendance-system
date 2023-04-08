@@ -5,9 +5,9 @@ const redisClient = require('../../config/redis')
 const { Op } = Sequelize
 exports.updateAvatar = async function (req, res, next) {
   try {
-    const { id } = req.params
+    const { employeeId } = req.params
     const file = req.file
-    const employee = await Employee.findByPk(id, {
+    const employee = await Employee.findByPk(employeeId, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     })
     if (!employee) {
@@ -28,12 +28,12 @@ exports.updateAvatar = async function (req, res, next) {
 }
 exports.getEmployee = async function (req, res, next) {
   try {
-    const { id } = req.params
-    const employee = await Employee.findByPk(id, {
+    const { employeeId } = req.params
+    const employee = await Employee.findByPk(employeeId, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     })
     if (!employee) {
-      const message = `Do not found employee ${id}`
+      const message = `Do not found employee ${employeeId}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     const message = 'Get employee data successfully'
@@ -44,13 +44,13 @@ exports.getEmployee = async function (req, res, next) {
 }
 exports.patchEmployee = async function (req, res, next) {
   try {
-    const { id } = req.params
+    const { employeeId } = req.params
     const { password, phone, email } = req.body
-    const employee = await Employee.findByPk(id, {
+    const employee = await Employee.findByPk(employeeId, {
       attributes: { exclude: ['createdAt', 'updatedAt'] },
     })
     if (!employee) {
-      const message = `Do not found employee ${id}`
+      const message = `Do not found employee ${employeeId}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     if (password) employee.password = password
@@ -65,17 +65,15 @@ exports.patchEmployee = async function (req, res, next) {
 }
 exports.getPersonalAttendances = async function (req, res, next) {
   try {
-    const { id: employeeId } = req.params
+    const { employeeId } = req.params
     const { date } = req.query
-    const { hireDateId } = req.user
+    const employee = await Employee.findByPk(employeeId)
+    const { hireDateId } = employee
     if (date === 'today') {
       const dailyCache = await redisClient.json.get('dailyCache')
       const dateId = dailyCache.today.id
       const attendance = await Attendance.findOne({
-        where: {
-          employeeId,
-          dateId,
-        },
+        where: { employeeId, dateId },
         attributes: { exclude: ['createdAt', `updatedAt`] },
       })
       if (!attendance) {
@@ -88,12 +86,7 @@ exports.getPersonalAttendances = async function (req, res, next) {
       const dailyCache = await redisClient.json.get('dailyCache')
       const dateIds = dailyCache.recentDates.map((e) => e.id)
       const attendances = await Calendar.findAll({
-        where: {
-          id: {
-            [Op.in]: dateIds,
-            [Op.gte]: hireDateId,
-          },
-        },
+        where: { id: { [Op.in]: dateIds, [Op.gte]: hireDateId } },
         include: {
           model: Attendance,
           where: { employeeId },

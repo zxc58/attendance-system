@@ -41,10 +41,9 @@ passport.use(
 passport.use(
   new JwtStrategy(jwtConfig, (accessTokenPayload, done) => {
     try {
-      const user = { ...accessTokenPayload }
-      delete user.exp
-      delete user.iat
-      return done(null, user)
+      const { employeeId, role } = accessTokenPayload
+      if (!employeeId || !role) throw new Error('Access token invalid')
+      return done(null, { employeeId, role })
     } catch (error) {
       console.error(error)
       done(error)

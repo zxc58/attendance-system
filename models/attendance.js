@@ -31,6 +31,13 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Attendance',
       tableName: 'Attendances',
       underscored: true,
+      indexes: [
+        {
+          unique: true,
+          name: 'punch',
+          fields: ['employeeId', 'dateId'],
+        },
+      ],
     }
   )
   return Attendance

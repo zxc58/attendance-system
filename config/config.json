@@ -3,9 +3,10 @@
     "username": "root",
     "password": "password",
     "database": "attendance",
-    "host": "localhost",
+    "host": "database",
     "dialect": "mysql",
-    "logging": false
+    "logging": false,
+    "port": 3306
   },
   "production": {
     "use_env_variable": "DB_CONNECT_STRING",

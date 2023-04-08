@@ -1,0 +1,10 @@
+uploads/*
+/node_modules
+logs/*
+.env
+test.js
+remote.json
+remote.log
+work.log
+.vscode/*
+.husky/*

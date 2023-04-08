@@ -4,16 +4,16 @@ const bcryptjs = require('bcryptjs')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const queryTypes = { type: queryInterface.sequelize.QueryTypes.SELECT }
+    const accounts = ['titansoft', 'alphacamp', 'admin']
+    const a = await queryInterface.select(null, 'Employees', {
+      where: { account: { [Sequelize.Op.in]: accounts } },
+    })
+    if (a.length !== 0) return console.info('Already seed')
     const [dates, departments] = await Promise.all([
-      queryInterface.sequelize.query(
-        "SELECT id,date from Calendar where date='2022-10-12'",
-        queryTypes
-      ),
-      queryInterface.sequelize.query(
-        "SELECT id,name from Departments where name='HR'",
-        queryTypes
-      ),
+      queryInterface.select(null, 'Calendar', {
+        where: { date: '2022-10-12' },
+      }),
+      queryInterface.select(null, 'Departments', { where: { name: 'HR' } }),
     ])
     const [hire_date_id, department_id] = [dates[0].id, departments[0].id]
     const employees = [

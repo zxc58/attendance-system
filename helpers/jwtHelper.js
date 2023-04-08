@@ -6,11 +6,15 @@ const accessTokenSecret =
 const accessTokenMaxage = Number(process.env.ACCESS_TOKEN_MAXAGE ?? 30000)
 /**
  *
- * @param {object} user user information
+ * @param {object} employee employee information
  * @returns {{accessToken:string,refreshToken:string}}
  */
-exports.signJWT = function (user) {
-  const accessToken = jwt.sign(user, accessTokenSecret, {
+exports.signJWT = function (employee) {
+  const payload = {
+    employeeId: employee.id,
+    role: employee.isAdmin ? 'admin' : 'employee',
+  }
+  const accessToken = jwt.sign(payload, accessTokenSecret, {
     expiresIn: `${accessTokenMaxage}s`,
   })
   return { accessToken, refreshToken: uuid() }
