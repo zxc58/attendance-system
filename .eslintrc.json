@@ -4,12 +4,8 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["prettier"],
-  "plugins": ["prettier"],
+  "extends": ["standard", "plugin:prettier/recommended"],
   "rules": {
-    "no-unused-vars": "warn",
-    "prettier/prettier": "error",
-    "arrow-body-style": "off",
-    "prefer-arrow-callback": "off"
+    "no-unused-vars": "warn"
   }
 }

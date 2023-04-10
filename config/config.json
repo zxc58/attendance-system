@@ -2,10 +2,11 @@
   "development": {
     "username": "root",
     "password": "password",
-    "database": "titansoft",
-    "host": "127.0.0.1",
+    "database": "attendance",
+    "host": "database",
     "dialect": "mysql",
-    "logging": false
+    "logging": false,
+    "port": 3306
   },
   "production": {
     "use_env_variable": "DB_CONNECT_STRING",

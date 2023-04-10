@@ -5,6 +5,7 @@ const {
 } = require('../../controllers')
 const router = Router()
 const {
+  multer: upload,
   validator: {
     bodyPassword,
     bodyPunchIn,
@@ -16,12 +17,8 @@ const {
   },
 } = require('../../middlewares')
 //
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
-
 router.post(
-  '/:id/avatar',
+  '/avatar',
   upload.single('image'),
   employeeController.updateAvatar
   // #swagger.tags = ['Employee']
@@ -29,27 +26,27 @@ router.post(
 )
 //
 router.get(
-  '/:id',
+  '/',
   employeeController.getEmployee
   // #swagger.tags = ['Employee']
   // #swagger.description = 'Get personal data'
 )
 router.get(
-  '/:id/attendances',
+  '/attendances',
   [queryDate, validationCallback],
   employeeController.getPersonalAttendances
   // #swagger.tags = ['Attendance']
   // #swagger.description = 'Get personal attendances'
 )
 router.patch(
-  '/:id',
+  '/',
   [bodyEmail, bodyPassword, validationCallback],
   employeeController.patchEmployee
   // #swagger.tags = ['Employee']
-  // #swagger.description = 'Update personal data'
+  // #swagger.description = 'Update personal data (for text value)'
 )
 router.post(
-  '/:id/attendances',
+  '/attendances',
   [bodyPunchIn, queryLocation, validationCallback],
   attendanceController.punchIn
   /*  #swagger.tags = ['Attendance']
@@ -63,12 +60,11 @@ router.post(
     }  */
 )
 router.patch(
-  '/:employeeId/attendances/:attendanceId',
+  '/attendances/:attendanceId',
   [bodyPunchOut, queryLocation, validationCallback],
   attendanceController.punchOut
   /*  #swagger.tags = ['Attendance']
-      #swagger.description = 'hahahaApi for employee punch out'
+      #swagger.description = 'Api for employee punch out'
   */
 )
-
 module.exports = router

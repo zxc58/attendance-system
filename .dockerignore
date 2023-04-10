@@ -1,8 +1,10 @@
+uploads/*
 /node_modules
-/logs
+logs/*
 .env
 test.js
 remote.json
 remote.log
-/uploads
 work.log
+.vscode/*
+.husky/*

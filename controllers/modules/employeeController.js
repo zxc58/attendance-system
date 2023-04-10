@@ -1,58 +1,39 @@
 const httpStatus = require('http-status')
-const AWS = require('aws-sdk')
-const short = require('short-uuid')
+const { uploadFile } = require('../../services/imgur')
 const { Employee, Attendance, Calendar, Sequelize } = require('../../models')
 const redisClient = require('../../config/redis')
 const { Op } = Sequelize
-
-const accessKeyId = process.env.AWS_IAM_ACCESS_KEY_ID
-const secretAccessKey = process.env.AWS_IAM_SECRET_ACCESS_KEY
-const s3 = new AWS.S3({ accessKeyId, secretAccessKey })
-
 exports.updateAvatar = async function (req, res, next) {
   try {
-    const { id } = req.params
-    const employee = await Employee.findByPk(id, {
+    const { employeeId } = req.params
+    const file = req.file
+    const employee = await Employee.findByPk(employeeId, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     })
     if (!employee) {
       const message = 'Do not found resource of this id'
       return res.status(httpStatus.BAD_REQUEST).json({ message })
     }
-    const params = {
-      Bucket: process.env.AWS_S3_BUCKET,
-      Key: short.generate(),
-      Body: req.file.buffer,
-      ACL: 'public-read',
-      ContentType: req.file.mimetype,
+    const url = await uploadFile(file)
+    if (!url) {
+      const message = 'update avatar fail'
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
     }
-    s3.upload(params, async function (err, data) {
-      try {
-        if (err) {
-          const message = 'update avatar fail'
-          return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
-        }
-        employee.avatar = data.Location
-        await employee.save()
-        return res.json({ message: 'successfully', avatar: data.Location })
-      } catch (err) {
-        const message = 'Update avatar fail'
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message })
-      }
-    })
+    employee.avatar = url
+    await employee.save()
+    return res.json({ message: 'successfully', avatar: url })
   } catch (err) {
     next(err)
   }
 }
-
 exports.getEmployee = async function (req, res, next) {
   try {
-    const { id } = req.params
-    const employee = await Employee.findByPk(id, {
+    const { employeeId } = req.params
+    const employee = await Employee.findByPk(employeeId, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
     })
     if (!employee) {
-      const message = `Do not found employee ${id}`
+      const message = `Do not found employee ${employeeId}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     const message = 'Get employee data successfully'
@@ -61,49 +42,38 @@ exports.getEmployee = async function (req, res, next) {
     next(error)
   }
 }
-
 exports.patchEmployee = async function (req, res, next) {
   try {
-    const { id } = req.params
+    const { employeeId } = req.params
     const { password, phone, email } = req.body
-    const newData = {}
-    if (password) {
-      newData.password = password
-    }
-    if (phone) {
-      newData.phone = phone
-    }
-    if (email) {
-      newData.email = email
-    }
-    const employee = await Employee.findByPk(id)
+    const employee = await Employee.findByPk(employeeId, {
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+    })
     if (!employee) {
-      const message = `Do not found employee ${id}`
+      const message = `Do not found employee ${employeeId}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
-    employee.set(newData)
+    if (password) employee.password = password
+    if (phone) employee.phone = phone
+    if (email) employee.email = email
     const newEmployee = await employee.save()
-    const message = 'update password successfully'
-    return res.json({ message, employee: newEmployee.toJSON() })
+    const message = 'Update password successfully'
+    return res.json({ message, data: newEmployee.toJSON() })
   } catch (error) {
     next(error)
   }
 }
-
 exports.getPersonalAttendances = async function (req, res, next) {
   try {
-    const { id: employeeId } = req.params
+    const { employeeId } = req.params
     const { date } = req.query
-    const { hireDateId } = req.user
+    const employee = await Employee.findByPk(employeeId)
+    const { hireDateId } = employee
     if (date === 'today') {
-      const todayJSON = await redisClient.get('today')
-      const today = JSON.parse(todayJSON)
-      const dateId = today.id
+      const dailyCache = await redisClient.json.get('dailyCache')
+      const dateId = dailyCache.today.id
       const attendance = await Attendance.findOne({
-        where: {
-          employeeId,
-          dateId,
-        },
+        where: { employeeId, dateId },
         attributes: { exclude: ['createdAt', `updatedAt`] },
       })
       if (!attendance) {
@@ -113,15 +83,10 @@ exports.getPersonalAttendances = async function (req, res, next) {
       const message = 'Get today punching successfully'
       return res.json({ message, attendances: attendance.toJSON() })
     } else if (date === 'recent') {
-      const recentDates = await redisClient.get('recentDates')
-      const dateIds = JSON.parse(recentDates).map((e) => e.id)
+      const dailyCache = await redisClient.json.get('dailyCache')
+      const dateIds = dailyCache.recentDates.map((e) => e.id)
       const attendances = await Calendar.findAll({
-        where: {
-          id: {
-            [Op.in]: dateIds,
-            [Op.gte]: hireDateId,
-          },
-        },
+        where: { id: { [Op.in]: dateIds, [Op.gte]: hireDateId } },
         include: {
           model: Attendance,
           where: { employeeId },

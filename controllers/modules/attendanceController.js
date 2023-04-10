@@ -1,44 +1,35 @@
 const httpStatus = require('http-status')
 const redisClient = require('../../config/redis')
 const { Attendance } = require('../../models')
-
+const { dayjs } = require('../../helpers/timeHelper')
 exports.getQrcode = async function (req, res, next) {
   try {
-    const punchQrId = await redisClient.get('punchQrId')
+    const dailyCache = await redisClient.json.get('dailyCache')
+    const punchQrId = dailyCache.punchQrId
     return res.json({ message: 'get qr successfully', punchQrId })
   } catch (err) {
     next(err)
   }
 }
-
 exports.qrPunch = async function (req, res, next) {
   try {
-    const employeeId = req.user.id
-    const { punchQrId, punch } = req.body
-    const [checkUuid, todayJSON] = await Promise.all([
-      redisClient.get('punchQrId'),
-      redisClient.get('today'),
-    ])
-    if (!(checkUuid === punchQrId)) {
-      const message = 'Id is expired'
-      return res.status(httpStatus.NOT_FOUND).json({ message })
-    }
-    const dateId = JSON.parse(todayJSON).id
+    const { employeeId } = req.employee
+    const { punchQrId } = req.body
+    const punch = dayjs().startOf('minute').toDate()
+    const dailyCache = await redisClient.json.get('dailyCache')
+    if (dailyCache.punchQrId !== punchQrId)
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: 'Id is expired or invalid' })
+    const dateId = dailyCache.today.id
     const attendance = await Attendance.findOne({
-      where: {
-        dateId,
-        employeeId,
-      },
+      where: { dateId, employeeId },
     })
     if (attendance) {
       attendance.punchOut = punch
       await attendance.save()
     } else {
-      await Attendance.create({
-        employeeId,
-        punchIn: punch,
-        dateId,
-      })
+      await Attendance.create({ employeeId, punchIn: punch, dateId })
     }
     const message = 'QR code punch successfully'
     return res.json({ message })
@@ -46,35 +37,41 @@ exports.qrPunch = async function (req, res, next) {
     next(err)
   }
 }
-
 exports.punchIn = async function (req, res, next) {
   try {
-    const { id: employeeId } = req.params
-    const { punchIn } = req.body
-    const todayJSON = await redisClient.get('today')
-    const today = JSON.parse(todayJSON)
-    const dateId = today.id
-    const attendance = await Attendance.create(
-      { dateId, employeeId, punchIn },
-      { attributes: { exclude: ['createdAt', 'updatedAt'] } }
-    )
+    const { employeeId } = req.params
+    const dailyCache = await redisClient.json.get('dailyCache')
+    const checkCondition = { dateId: dailyCache.today.id, employeeId }
+    const [attendance, isJustCreated] = await Attendance.findOrCreate({
+      where: checkCondition,
+      defaults: {
+        ...checkCondition,
+        punchIn: dayjs().startOf('minute').toDate(),
+      },
+    })
+    if (!isJustCreated)
+      return res
+        .status(httpStatus.CONFLICT)
+        .json({ message: "You've already punched in." })
+    const data = attendance.toJSON()
+    delete data.createdAt
+    delete data.updatedAt
+    data.punchOut = null
     const message = 'Punch in successfully'
-    return res.json({ message, data: attendance.toJSON() })
+    return res.json({ message, data })
   } catch (error) {
     next(error)
   }
 }
-
 exports.punchOut = async function (req, res, next) {
   try {
     const { attendanceId } = req.params
-    const { punchOut } = req.body
     const attendance = await Attendance.findByPk(attendanceId)
     if (!attendance) {
       const message = `Do not found attendance ${attendanceId}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
-    attendance.punchOut = punchOut
+    attendance.punchOut = dayjs().startOf('minute').toDate()
     const newAttendance = await attendance.save()
     const message = 'Punch out successfully'
     return res.json({ message, data: newAttendance.toJSON() })
