@@ -5,7 +5,6 @@ const {
   validator: { queryLocation, validationCallback },
 } = require('../../middlewares')
 const router = Router()
-
 router.get(
   '/qrcode',
   [queryLocation, validationCallback],
@@ -20,5 +19,4 @@ router.post(
   // #swagger.tags = ['QR']
   // #swagger.description = 'Api for qr punch'
 )
-
 module.exports = router

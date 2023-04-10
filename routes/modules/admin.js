@@ -20,13 +20,13 @@ router.patch(
   // #swagger.description = 'Unlock an account'
 )
 router.get(
-  '/employees/absenteeism',
+  '/employees/absent',
   adminController.getAbsenteeism
   // #swagger.tags = ['Admin']
   // #swagger.description = 'Get absenteeism employees'
 )
 router.patch(
-  '/attendances/:id',
+  '/attendances',
   adminController.modifyAttendance
   // #swagger.tags = ['Admin']
   // #swagger.description = 'Modify Attendance '

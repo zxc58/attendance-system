@@ -4,5 +4,8 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["plugin:prettier/recommended"]
+  "extends": ["standard", "plugin:prettier/recommended"],
+  "rules": {
+    "no-unused-vars": "warn"
+  }
 }
