@@ -13,7 +13,13 @@
       "post": {
         "tags": ["Auth"],
         "description": "Api for sign in",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },
@@ -21,7 +27,39 @@
       "post": {
         "tags": ["Auth"],
         "description": "Api for refresh access token",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/auth/logout": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/auth/verify": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },
@@ -29,40 +67,62 @@
       "get": {
         "tags": ["QR"],
         "description": "Get qrcode value",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {}
       },
       "post": {
         "tags": ["QR"],
         "description": "Api for qr punch",
-        "parameters": [],
-        "responses": {}
-      }
-    },
-    "/employees/{id}/avatar": {
-      "post": {
-        "tags": ["Employee"],
-        "description": "Update personal avatar",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "user-agent",
+            "in": "header",
             "type": "string"
           }
         ],
         "responses": {}
       }
     },
-    "/employees/{id}": {
+    "/employees/{employeeId}/avatar": {
+      "post": {
+        "tags": ["Employee"],
+        "description": "Update personal avatar",
+        "parameters": [
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {}
+      }
+    },
+    "/employees/{employeeId}/": {
       "get": {
         "tags": ["Employee"],
         "description": "Get personal data",
         "parameters": [
           {
-            "name": "id",
+            "name": "employeeId",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
             "type": "string"
           }
         ],
@@ -70,27 +130,37 @@
       },
       "patch": {
         "tags": ["Employee"],
-        "description": "Update personal data",
+        "description": "Update personal data (for text value)",
         "parameters": [
           {
-            "name": "id",
+            "name": "employeeId",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
             "type": "string"
           }
         ],
         "responses": {}
       }
     },
-    "/employees/{id}/attendances": {
+    "/employees/{employeeId}/attendances": {
       "get": {
         "tags": ["Attendance"],
         "description": "Get personal attendances",
         "parameters": [
           {
-            "name": "id",
+            "name": "employeeId",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
             "type": "string"
           }
         ],
@@ -101,9 +171,14 @@
         "description": "Api for employee punch in",
         "parameters": [
           {
-            "name": "id",
+            "name": "employeeId",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
             "type": "string"
           }
         ],
@@ -132,7 +207,7 @@
     "/employees/{employeeId}/attendances/{attendanceId}": {
       "patch": {
         "tags": ["Attendance"],
-        "description": "hahahaApi for employee punch out",
+        "description": "Api for employee punch out",
         "parameters": [
           {
             "name": "employeeId",
@@ -145,6 +220,11 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {}
@@ -154,7 +234,13 @@
       "get": {
         "tags": ["Admin"],
         "description": "Get unwork employees",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },
@@ -162,7 +248,13 @@
       "get": {
         "tags": ["Admin"],
         "description": "Get locked accounts",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },
@@ -176,28 +268,38 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {}
       }
     },
-    "/admin/employees/absenteeism": {
+    "/admin/employees/absent": {
       "get": {
         "tags": ["Admin"],
-        "description": "Get absenteeism employees",
-        "parameters": [],
+        "description": "Get absent employees",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {}
       }
     },
-    "/admin/attendances/{id}": {
+    "/admin/attendances": {
       "patch": {
         "tags": ["Admin"],
         "description": "Modify Attendance ",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "user-agent",
+            "in": "header",
             "type": "string"
           }
         ],
@@ -215,11 +317,11 @@
         },
         "punchIn": {
           "type": "string",
-          "example": "2023-03-12T23:58:36.699Z"
+          "example": "2023-04-10T11:46:25.734Z"
         },
         "punchOut": {
           "type": "string",
-          "example": "2023-03-12T23:58:36.699Z"
+          "example": "2023-04-10T11:46:25.734Z"
         },
         "employeeId": {
           "type": "number",
@@ -240,11 +342,11 @@
         },
         "punchIn": {
           "type": "string",
-          "example": "2023-03-12T23:58:36.699Z"
+          "example": "2023-04-10T11:46:25.734Z"
         },
         "punchOut": {
           "type": "string",
-          "example": "2023-03-12T23:58:36.699Z"
+          "example": "2023-04-10T11:46:25.734Z"
         },
         "employeeId": {
           "type": "number",

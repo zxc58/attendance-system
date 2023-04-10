@@ -1,8 +1,8 @@
 /node_modules
-logs/*
+/logs
 .env
 test.js
 remote.json
 remote.log
-uploads/*
+/uploads
 work.log

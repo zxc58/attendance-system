@@ -14,8 +14,8 @@ services:
     ports:
       - 3305:3306
   backend:
-    build: 
-      context: .      
+    build:
+      context: .
       target: dev
     container_name: backend
     volumes:

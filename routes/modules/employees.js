@@ -64,7 +64,7 @@ router.patch(
   [bodyPunchOut, queryLocation, validationCallback],
   attendanceController.punchOut
   /*  #swagger.tags = ['Attendance']
-      #swagger.description = 'hahahaApi for employee punch out'
+      #swagger.description = 'Api for employee punch out'
   */
 )
 module.exports = router
