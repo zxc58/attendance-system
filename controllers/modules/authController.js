@@ -1,7 +1,7 @@
 const httpStatus = require('http-status')
 const dayjs = require('dayjs')
 const sequelizeQuery = require('../../helpers/sequelizeQuery')
-const { Token, Employees } = require('../../models')
+const { Token, Employee } = require('../../models')
 const passport = require('../../config/passport')
 const cookiesConfig = require('../../config/cookies')
 const { signJWT } = require('../../helpers/jwtHelper')
@@ -95,7 +95,7 @@ exports.signout = async function (req, res, next) {
 exports.verifyJWT = async function (req, res, next) {
   try {
     const { employeeId } = req.employee
-    const employee = await Employees.findByPk(employeeId)
+    const employee = await Employee.findByPk(employeeId)
     const attendances = await sequelizeQuery.getSomeoneAttendance(employee)
     return res.json({ data: { attendances, employee: employee.toJSON() } })
   } catch (error) {

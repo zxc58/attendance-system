@@ -32,9 +32,9 @@ exports.getAbsentEmployees = async function () {
   const query = `SELECT e.id as employeeId,e.name as name,c.id as dateId,c.date as date,c.day as day
 ,a.punch_in as punchIn ,a.punch_out as punchOut,
   TIMESTAMPDIFF(HOUR,a.punch_in,a.punch_out) as hourCount
-FROM attendance.employees as e 
-CROSS JOIN (select * from attendance.calendar where date>$dateCondition) as c
-left join attendance.attendances as a 
+FROM attendance.Employees as e 
+CROSS JOIN (select * from attendance.Calendar where date>$dateCondition) as c
+left join attendance.Attendances as a 
 on  e.id=a.employee_id and c.id=a.date_id
 where c.id<$todayId and e.hire_date_id <= c.id and c.is_holiday=0
 having isnull(punchOut) or isnull(hourCount) or hourCount<8

@@ -61,13 +61,13 @@ exports.unlockAccount = async function (req, res, next) {
     const { id } = req.params
     const employee = await Employee.findByPk(id)
     if (!employee) {
-      const message = `Do not found employee ${id}`
+      const message = `Did not find employee where id=${id}`
       return res.status(httpStatus.NOT_FOUND).json({ message })
     }
     employee.incorrect = 0
     employee.password = defaultPassword
     const newEmployee = await employee.save()
-    const message = 'update password successfully'
+    const message = 'Unlocked account,update password successfully'
     return res.json({ message, data: newEmployee.toJSON() })
   } catch (error) {
     next(error)

@@ -14,10 +14,13 @@ exports.getQrcode = async function (req, res, next) {
 exports.qrPunch = async function (req, res, next) {
   try {
     const { employeeId } = req.employee
-    const { punchQrId, punch } = req.body
+    const { punchQrId } = req.body
+    const punch = dayjs().startOf('minute').toDate()
     const dailyCache = await redisClient.json.get('dailyCache')
     if (dailyCache.punchQrId !== punchQrId)
-      return res.status(httpStatus.NOT_FOUND).json({ message: 'Id is expired' })
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ message: 'Id is expired or invalid' })
     const dateId = dailyCache.today.id
     const attendance = await Attendance.findOne({
       where: { dateId, employeeId },
