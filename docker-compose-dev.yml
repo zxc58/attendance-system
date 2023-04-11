@@ -27,3 +27,4 @@ services:
       - database
     ports:
       - 3000:3000
+    command: sh -c './wait-for database:3306 -- npm run initDB && npm run dev -- --legacy-watch'

@@ -8,3 +8,9 @@ RUN npm install
 COPY . .
 EXPOSE 3000
 CMD npm run dev -- --legacy-watch
+
+FROM base as production
+ENV NODE_ENV=production
+RUN npm install
+COPY . .
+CMD [ "npm", "start" ]

@@ -3,7 +3,6 @@
 ### 此專案為 attendance 專案的後端 API 伺服器
 
 前端連結: https://github.com/zxc58/attendance \
-API 文件: https://attendance-system-production.up.railway.app/api-doc/
 
 ### 環境要求
 
@@ -29,7 +28,11 @@ $ git clone https://github.com/zxc58/attendance-system.git
 
 ### 第三方圖片儲存
 
-本專案預設使用 AWS S3 儲存服務，請先至 AWS S3 服務中建立儲存庫，以及 AWS IAM 中建立一個使用者，給使用者 S3 服務權限，並創建 access key,在接下來環境變數中使用。
+本專案使用imgur儲存庫，請先至imgur申請一個app id。
+
+### Email服務
+
+本專案使用gmail服務，先申請一組APP帳密供本專案使用。
 
 ### 建立.env 檔案
 
@@ -80,3 +83,13 @@ $ npm start
 |titansoft|titaner|employee|
 |alphacamp|titaner|employee|
 |admin|tiadmin|admin|
+
+### Docker開發
+
+本專案有建立 development docker-compose，若是想使用 docker 進行後續開發，可以在建立 .env 檔案後使用下面指令
+
+```
+npm run docker:up:dev
+```
+此指令會建立3個container，包含memory store、database和本專案，並會建立資料庫架構與種子資料。
+註:請先空出 3000 和 3305 PORT 給server和database
