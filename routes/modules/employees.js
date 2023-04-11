@@ -4,18 +4,7 @@ const {
   attendanceController,
 } = require('../../controllers')
 const router = Router()
-const {
-  multer: upload,
-  validator: {
-    bodyPassword,
-    bodyPunchIn,
-    bodyPunchOut,
-    bodyEmail,
-    queryLocation,
-    queryDate,
-    validationCallback,
-  },
-} = require('../../middlewares')
+const { multer: upload } = require('../../middlewares')
 //
 router.post(
   '/avatar',
@@ -33,21 +22,18 @@ router.get(
 )
 router.get(
   '/attendances',
-  [queryDate, validationCallback],
   employeeController.getPersonalAttendances
   // #swagger.tags = ['Attendance']
   // #swagger.description = 'Get personal attendances'
 )
 router.patch(
   '/',
-  [bodyEmail, bodyPassword, validationCallback],
   employeeController.patchEmployee
   // #swagger.tags = ['Employee']
   // #swagger.description = 'Update personal data (for text value)'
 )
 router.post(
   '/attendances',
-  [bodyPunchIn, queryLocation, validationCallback],
   attendanceController.punchIn
   /*  #swagger.tags = ['Attendance']
       #swagger.description = 'Api for employee punch in'
@@ -61,7 +47,6 @@ router.post(
 )
 router.patch(
   '/attendances/:attendanceId',
-  [bodyPunchOut, queryLocation, validationCallback],
   attendanceController.punchOut
   /*  #swagger.tags = ['Attendance']
       #swagger.description = 'Api for employee punch out'

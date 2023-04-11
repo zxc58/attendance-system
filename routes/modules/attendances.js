@@ -2,12 +2,10 @@ const { Router } = require('express')
 const { attendanceController } = require('../../controllers')
 const {
   authenticator: { jwtAuth },
-  validator: { queryLocation, validationCallback },
 } = require('../../middlewares')
 const router = Router()
 router.get(
   '/qrcode',
-  [queryLocation, validationCallback],
   attendanceController.getQrcode
   // #swagger.tags = ['QR']
   // #swagger.description = 'Get qrcode value'
