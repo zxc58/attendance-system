@@ -9,7 +9,7 @@ COPY . .
 EXPOSE 3000
 CMD npm run dev -- --legacy-watch
 
-FROM base as production
+FROM base as prod
 ENV NODE_ENV=production
 RUN npm install
 COPY . .

@@ -66,44 +66,25 @@ exports.patchEmployee = async function (req, res, next) {
 exports.getPersonalAttendances = async function (req, res, next) {
   try {
     const { employeeId } = req.params
-    const { date } = req.query
     const employee = await Employee.findByPk(employeeId)
     const { hireDateId } = employee
-    if (date === 'today') {
-      const dailyCache = await redisClient.json.get('dailyCache')
-      const dateId = dailyCache.today.id
-      const attendance = await Attendance.findOne({
-        where: { employeeId, dateId },
-        attributes: { exclude: ['createdAt', `updatedAt`] },
-      })
-      if (!attendance) {
-        const message = 'You have not punched in yet'
-        return res.json({ message, attendances: null })
-      }
-      const message = 'Get today punching successfully'
-      return res.json({ message, attendances: attendance.toJSON() })
-    } else if (date === 'recent') {
-      const dailyCache = await redisClient.json.get('dailyCache')
-      const dateIds = dailyCache.recentDates.map((e) => e.id)
-      const attendances = await Calendar.findAll({
-        where: { id: { [Op.in]: dateIds, [Op.gte]: hireDateId } },
-        include: {
-          model: Attendance,
-          where: { employeeId },
-          required: false,
-          attributes: { exclude: ['updatedAt', 'createdAt'] },
-        },
-        attributes: { exclude: ['createdAt', 'updatedAt'] },
-        raw: true,
-        nest: true,
-        order: [['date', 'DESC']],
-      })
-      const message = 'Get records success'
-      return res.json({ message, attendances })
-    } else {
-      const message = 'Bad query params'
-      return res.status(httpStatus.BAD_REQUEST).json({ message })
-    }
+    const dailyCache = await redisClient.json.get('dailyCache')
+    const dateIds = dailyCache.recentDates.map((e) => e.id)
+    const attendances = await Calendar.findAll({
+      where: { id: { [Op.in]: dateIds, [Op.gte]: hireDateId } },
+      include: {
+        model: Attendance,
+        where: { employeeId },
+        required: false,
+        attributes: { exclude: ['updatedAt', 'createdAt'] },
+      },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      raw: true,
+      nest: true,
+      order: [['date', 'DESC']],
+    })
+    const message = 'Get records success'
+    return res.json({ message, attendances })
   } catch (err) {
     next(err)
   }
